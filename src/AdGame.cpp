@@ -798,6 +798,19 @@ HRESULT CAdGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *This
 		return S_OK;
 	}
 
+	else if(strcmp(Name, "SetBrightness")==0){
+		Stack->CorrectParams(1);
+		float gamma = Stack->Pop()->GetFloat();
+		
+		Game->m_Renderer->SetBrightness(gamma);
+		
+
+		Stack->PushBool(true);
+
+		return S_OK;
+
+	}
+
 
 	else return CBGame::ScCallMethod(Script, Stack, ThisStack, Name);
 }

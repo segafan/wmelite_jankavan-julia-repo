@@ -63,6 +63,8 @@ public:
 	virtual HRESULT Setup2D(bool Force=false);
 	virtual HRESULT SetupLines();
 
+	virtual void SetBrightness(float brightness);
+
 	virtual HRESULT SendRenderingHintSceneComplete() { return S_OK; };
 
 	virtual const char* GetName(){ return ""; };
