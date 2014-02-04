@@ -584,3 +584,8 @@ float CBRenderSDL::GetAlignedDownscalingRatio(float ratio, float stepping)
 	return newRatio;
 }
 
+
+void CBRenderSDL::SetBrightness(float brightness)
+{
+	 SDL_SetWindowBrightness(m_Win,brightness);
+}

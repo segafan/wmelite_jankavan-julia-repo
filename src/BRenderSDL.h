@@ -65,6 +65,9 @@ public:
 
 	void DumpData(char* Filename);
 
+	void  SetBrightness(float brightness);
+
+
 	float GetScaleRatioX() const { return m_RatioX; }
 	float GetScaleRatioY() const { return m_RatioY; }
 
