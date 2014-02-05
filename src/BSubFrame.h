@@ -51,7 +51,6 @@ public:
 
 	bool m_IsMasked;
 
-	void OverrideSurface();
 
 	int m_HotspotX;
 	int m_HotspotY;

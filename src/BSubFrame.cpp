@@ -197,20 +197,11 @@ HRESULT CBSubFrame::LoadBuffer(BYTE * Buffer, int LifeTime, bool KeepLoaded)
 }
 
 
-void CBSubFrame::OverrideSurface()
-{
-
-	m_Surface->RegenerateTexture();
-}
-
 
 //////////////////////////////////////////////////////////////////////
 HRESULT CBSubFrame::Draw(int X, int Y, CBObject* Register, float ZoomX, float ZoomY, bool Precise, DWORD Alpha, float Rotate, TSpriteBlendMode BlendMode)
 {
 	if(!m_Surface) return S_OK;
-
-	if (m_IsMasked)
-		OverrideSurface();
 
 	if(Register!=NULL && !m_Decoration)
 	{
