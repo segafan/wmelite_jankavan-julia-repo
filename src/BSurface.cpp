@@ -171,10 +171,6 @@ bool CBSurface::IsTransparentAtLite(int X, int Y)
 	return false;
 }
 
-void CBSurface::RegenerateTexture()
-{
-
-}
 
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSurface::Invalidate()

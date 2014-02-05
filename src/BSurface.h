@@ -63,7 +63,7 @@ public:
 	virtual HRESULT StartPixelOp();
 	virtual HRESULT EndPixelOp();
 	virtual bool IsTransparentAtLite(int X, int Y);
-	virtual void RegenerateTexture();
+
 	
 	void SetFilename(char* Filename);
 	void SetSize(int Width, int Height);
