@@ -101,7 +101,7 @@ HRESULT CBSurfaceStorage::RemoveSurface(CBSurface * surface)
 
 
 //////////////////////////////////////////////////////////////////////
-CBSurface* CBSurfaceStorage::AddSurface(char * Filename, bool default_ck, BYTE ck_red, BYTE ck_green, BYTE ck_blue, int LifeTime, bool KeepLoaded)
+CBSurface* CBSurfaceStorage::AddSurface(char * Filename, bool default_ck, BYTE ck_red, BYTE ck_green, BYTE ck_blue, int LifeTime, bool KeepLoaded, bool KeepSurfaceCached)
 {
 	for(int i=0; i<m_Surfaces.GetSize(); i++)
 	{
@@ -130,7 +130,7 @@ CBSurface* CBSurfaceStorage::AddSurface(char * Filename, bool default_ck, BYTE c
 
 	if(!surface) return NULL;
 
-	if(FAILED(surface->Create(Filename, default_ck, ck_red, ck_green, ck_blue, LifeTime, KeepLoaded)))
+	if(FAILED(surface->Create(Filename, default_ck, ck_red, ck_green, ck_blue, LifeTime, KeepLoaded,KeepSurfaceCached)))
 	{
 		delete surface;
 		return NULL;

@@ -57,7 +57,7 @@ CBSurface::~CBSurface()
 
 
 //////////////////////////////////////////////////////////////////////
-HRESULT CBSurface::Create(char * Filename, bool default_ck, BYTE ck_red, BYTE ck_green, BYTE ck_blue, int LifeTime, bool KeepLoaded)
+HRESULT CBSurface::Create(char * Filename, bool default_ck, BYTE ck_red, BYTE ck_green, BYTE ck_blue, int LifeTime, bool KeepLoaded, bool KeepSurfaceCached)
 {
 	return E_FAIL;
 }
@@ -171,6 +171,10 @@ bool CBSurface::IsTransparentAtLite(int X, int Y)
 	return false;
 }
 
+void CBSurface::RegenerateTexture()
+{
+
+}
 
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSurface::Invalidate()

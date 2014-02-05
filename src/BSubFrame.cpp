@@ -34,6 +34,7 @@ IMPLEMENT_PERSISTENT(CBSubFrame, false);
 CBSubFrame::CBSubFrame(CBGame* inGame):CBScriptable(inGame, true)
 {
 	m_Surface = NULL;
+	m_IsMasked = false;
 	m_HotspotX = m_HotspotY = 0;
 	m_Alpha = 0xFFFFFFFF;
 	m_Transparent = 0xFFFF00FF;
@@ -196,10 +197,20 @@ HRESULT CBSubFrame::LoadBuffer(BYTE * Buffer, int LifeTime, bool KeepLoaded)
 }
 
 
+void CBSubFrame::OverrideSurface()
+{
+
+	m_Surface->RegenerateTexture();
+}
+
+
 //////////////////////////////////////////////////////////////////////
 HRESULT CBSubFrame::Draw(int X, int Y, CBObject* Register, float ZoomX, float ZoomY, bool Precise, DWORD Alpha, float Rotate, TSpriteBlendMode BlendMode)
 {
 	if(!m_Surface) return S_OK;
+
+	if (m_IsMasked)
+		OverrideSurface();
 
 	if(Register!=NULL && !m_Decoration)
 	{
@@ -218,6 +229,8 @@ HRESULT CBSubFrame::Draw(int X, int Y, CBObject* Register, float ZoomX, float Zo
 
 	//if(Alpha==0xFFFFFFFF) Alpha = m_Alpha; // TODO: better (combine owner's and self alpha)
 	if(m_Alpha!=0xFFFFFFFF) Alpha = m_Alpha;
+
+	
 
 	if(Rotate!=0.0f)
 	{
@@ -364,6 +377,15 @@ HRESULT CBSubFrame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *T
 		else Stack->PushString(m_SurfaceFilename);
 		return S_OK;
 	}
+	if(strcmp(Name, "SetMask")==0)
+	{
+		Stack->CorrectParams(0);
+			
+		m_IsMasked = true;
+
+		Stack->PushBool(true);
+		return S_OK;
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	// SetImage
@@ -392,7 +414,30 @@ HRESULT CBSubFrame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *T
 
 		return S_OK;
 	}
+	else if(strcmp(Name, "SetDynamicImage")==0)
+	{
+		Stack->CorrectParams(1);
+		CScValue* Val = Stack->Pop();
 
+		if(Val->IsNULL())
+		{
+			if(m_Surface) Game->m_SurfaceStorage->RemoveSurface(m_Surface);
+			SAFE_DELETE_ARRAY(m_SurfaceFilename);
+			Stack->PushBool(true);
+		}
+		else
+		{
+			char* Filename = Val->GetString();
+			if(SUCCEEDED(SetSurface(Filename,true,0,0,0,-1,false,true)))				
+			{
+				SetDefaultRect();
+				Stack->PushBool(true);
+			}
+			else Stack->PushBool(false);
+		}
+
+		return S_OK;
+	}
 	else return CBScriptable::ScCallMethod(Script, Stack, ThisStack, Name);
 }
 
@@ -585,7 +630,7 @@ char* CBSubFrame::ScToString()
 
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBSubFrame::SetSurface(char* Filename, bool default_ck, BYTE ck_red, BYTE ck_green, BYTE ck_blue, int LifeTime, bool KeepLoaded)
+HRESULT CBSubFrame::SetSurface(char* Filename, bool default_ck, BYTE ck_red, BYTE ck_green, BYTE ck_blue, int LifeTime, bool KeepLoaded, bool KeepSurfaceCached)
 {
 	if(m_Surface)
 	{
@@ -595,7 +640,8 @@ HRESULT CBSubFrame::SetSurface(char* Filename, bool default_ck, BYTE ck_red, BYT
 
 	SAFE_DELETE_ARRAY(m_SurfaceFilename);
 
-	m_Surface = Game->m_SurfaceStorage->AddSurface(Filename, default_ck, ck_red, ck_green, ck_blue, LifeTime, KeepLoaded);
+	m_Surface = Game->m_SurfaceStorage->AddSurface(Filename, default_ck, ck_red, ck_green, ck_blue, LifeTime, KeepLoaded,KeepSurfaceCached);
+	
 	if(m_Surface)
 	{
 		m_SurfaceFilename = new char[strlen(Filename)+1];

@@ -49,8 +49,9 @@ CBSurfaceSDL::~CBSurfaceSDL()
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-HRESULT CBSurfaceSDL::Create(char* Filename, bool default_ck, BYTE ck_red, BYTE ck_green, BYTE ck_blue, int LifeTime, bool KeepLoaded)
+/////////////////////////////////////////////////////////////////////////////////
+
+HRESULT CBSurfaceSDL::Create(char* Filename, bool default_ck, BYTE ck_red, BYTE ck_green, BYTE ck_blue, int LifeTime, bool KeepLoaded, bool KeepSurfaceCached)
 {
 	CBRenderSDL* renderer = static_cast<CBRenderSDL*>(Game->m_Renderer);
 
@@ -116,6 +117,8 @@ HRESULT CBSurfaceSDL::Create(char* Filename, bool default_ck, BYTE ck_red, BYTE 
 
 	void* inPtr = FreeImage_GetBits(img); 
 	SDL_Surface* surf = SDL_CreateRGBSurfaceFrom(inPtr, m_Width, m_Height, FreeImage_GetBPP(img), FreeImage_GetPitch(img), FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FI_RGBA_ALPHA_MASK); 
+	
+	// m_SdlSurface = surf;
 
 	// no alpha, set color key
 	if (FreeImage_GetBPP(img) != 32)
@@ -123,7 +126,15 @@ HRESULT CBSurfaceSDL::Create(char* Filename, bool default_ck, BYTE ck_red, BYTE 
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
 	//m_Texture = SdlUtil::CreateTextureFromSurface(renderer->GetSdlRenderer(), surf);
-	m_Texture = SDL_CreateTextureFromSurface(renderer->GetSdlRenderer(), surf);
+
+	if (KeepSurfaceCached)
+	{
+		m_SdlSurface = surf;
+		CreateStreamedTextureFromSurface();
+	}
+	else
+		m_Texture = SDL_CreateTextureFromSurface(renderer->GetSdlRenderer(), surf);
+
 	if (!m_Texture)
 	{
 		SDL_FreeSurface(surf);
@@ -133,7 +144,9 @@ HRESULT CBSurfaceSDL::Create(char* Filename, bool default_ck, BYTE ck_red, BYTE 
 
 	GenAlphaMask(surf);
 
-	SDL_FreeSurface(surf);
+	if (!KeepSurfaceCached)
+		SDL_FreeSurface(surf);
+			
 	FreeImage_Unload(img);
 
 
@@ -161,6 +174,9 @@ HRESULT CBSurfaceSDL::Create(char* Filename, bool default_ck, BYTE ck_red, BYTE 
 
 	return S_OK;
 }
+
+
+
 
 //////////////////////////////////////////////////////////////////////////
 void CBSurfaceSDL::GenAlphaMask(SDL_Surface* surface)
@@ -191,11 +207,12 @@ void CBSurfaceSDL::GenAlphaMask(SDL_Surface* surface)
 
 			Uint8 r, g, b, a;
 			SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+			
 
 			if (hasColorKey && r == ckRed && g == ckGreen && b == ckBlue)
 				a = 0;
 
-			m_AlphaMask[y * surface->w + x] = a;
+			m_AlphaMask[y * surface->w + x] = a; // a
 			if (a < 255) hasTransparency = true;
 		}
 	}
@@ -249,7 +266,7 @@ HRESULT CBSurfaceSDL::Create(int Width, int Height)
 
 	m_Width = Width;
 	m_Height = Height;
-
+	
 	Game->AddMem(m_Width * m_Height * 4);
 
 	m_Valid = true;
@@ -372,6 +389,7 @@ HRESULT CBSurfaceSDL::DisplayTransform(int X, int Y, int HotX, int HotY, RECT Re
 	return DrawSprite(X, Y, &Rect, ZoomX, ZoomY, Alpha, false, BlendMode, MirrorX, MirrorY, 0, 0, HotX, HotY, Rotate);
 }
 
+
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSurfaceSDL::DrawSprite(int X, int Y, RECT* Rect, float ZoomX, float ZoomY, DWORD Alpha, bool AlphaDisable, TSpriteBlendMode BlendMode, bool MirrorX, bool MirrorY, int offsetX, int offsetY, int originX, int originY, float angle)
 {
@@ -408,6 +426,7 @@ HRESULT CBSurfaceSDL::DrawSprite(int X, int Y, RECT* Rect, float ZoomX, float Zo
 
 	position.x += offsetX;
 	position.y += offsetY;
+
 
 	if (angle == 0.0f && !MirrorX && !MirrorY) SDL_RenderCopy(renderer->GetSdlRenderer(), m_Texture, &srcRect, &position);
 	else
@@ -477,3 +496,24 @@ void CBSurfaceSDL::FillTexture(const void* pixelData, int pitch, CBSurfaceSDL* a
 		SDL_UnlockTexture(m_Texture);
 	}
 }
+
+void CBSurfaceSDL::CreateStreamedTextureFromSurface()
+{
+	if (m_Texture) SDL_DestroyTexture(m_Texture);
+	CBRenderSDL* renderer = static_cast<CBRenderSDL*>(Game->m_Renderer);
+	m_Texture = SDL_CreateTexture(renderer->GetSdlRenderer(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, this->m_SdlSurface->w, this->m_SdlSurface->h);
+	CopyPixelsToTexture(m_SdlSurface, m_Texture);
+}
+
+void CBSurfaceSDL::CopyPixelsToTexture(SDL_Surface* surface, SDL_Texture *texture)
+{
+	BYTE* texPixels;
+	int texPitch;
+
+	int result = SDL_LockTexture(texture, NULL, (void**)&texPixels, &texPitch);
+
+	memcpy(texPixels,surface->pixels,surface->pitch*surface->h);	
+
+	SDL_UnlockTexture(texture);
+}
+
