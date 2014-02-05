@@ -35,7 +35,7 @@ public:
 	bool m_MirrorX;
 	bool m_MirrorY;
 	bool m_Decoration;
-	HRESULT SetSurface (char* Filename, bool default_ck=true, BYTE ck_red=0, BYTE ck_green=0, BYTE ck_blue=0, int LifeTime=-1, bool KeepLoaded=false);
+	HRESULT SetSurface (char* Filename, bool default_ck=true, BYTE ck_red=0, BYTE ck_green=0, BYTE ck_blue=0, int LifeTime=-1, bool KeepLoaded=false, bool KeepSurfaceCached=false);
 	HRESULT SetSurfaceSimple();
 	DECLARE_PERSISTENT(CBSubFrame, CBScriptable);
 	void SetDefaultRect();
@@ -47,6 +47,11 @@ public:
 	HRESULT LoadBuffer(BYTE* Buffer, int LifeTime, bool KeepLoaded);
 	HRESULT Draw(int X, int Y, CBObject* Register = NULL, float ZoomX=100, float ZoomY=100, bool Precise = true, DWORD Alpha=0xFFFFFFFF, float Rotate=0.0f, TSpriteBlendMode BlendMode=BLEND_NORMAL);
 	bool GetBoundingRect(LPRECT Rect, int X, int Y, float ScaleX=100, float ScaleY=100);
+	void ApplyMask();
+
+	bool m_IsMasked;
+
+	void OverrideSurface();
 
 	int m_HotspotX;
 	int m_HotspotY;
