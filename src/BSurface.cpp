@@ -209,3 +209,7 @@ void CBSurface::SetSize(int Width, int Height)
 	m_Width = Width;
 	m_Height = Height;
 }
+
+void CBSurface::ApplyTextureMask(CBSurface* alphaMask)
+{
+}

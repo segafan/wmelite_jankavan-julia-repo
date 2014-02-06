@@ -35,8 +35,12 @@ CBSurfaceSDL::CBSurfaceSDL(CBGame* inGame) : CBSurface(inGame)
 	m_Texture = NULL;
 	m_AlphaMask = NULL;
 
+	CachedPixels = NULL;
 	m_LockPixels = NULL;
 	m_LockPitch = 0;
+
+	m_MaskX = 0;
+	m_MaskY = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -505,15 +509,49 @@ void CBSurfaceSDL::CreateStreamedTextureFromSurface()
 	CopyPixelsToTexture(m_SdlSurface, m_Texture);
 }
 
-void CBSurfaceSDL::CopyPixelsToTexture(SDL_Surface* surface, SDL_Texture *texture)
+
+
+void CBSurfaceSDL::CopyPixelsToTexture(SDL_Surface* surface, SDL_Texture *texture, CBSurface* alphaMask)
 {
 	BYTE* texPixels;
 	int texPitch;
 
-	int result = SDL_LockTexture(texture, NULL, (void**)&texPixels, &texPitch);
 
-	memcpy(texPixels,surface->pixels,surface->pitch*surface->h);	
+	if (CachedPixels == NULL)
+	{
+		CachedPixels = new BYTE[m_SdlSurface->pitch*m_SdlSurface->h];
+		memcpy(CachedPixels,m_SdlSurface->pixels,m_SdlSurface->pitch*m_SdlSurface->h);
+	}
+
+	int result = SDL_LockTexture(texture, NULL, (void**)&texPixels, &texPitch);
+	
+	memcpy(texPixels,CachedPixels,m_SdlSurface->pitch*m_SdlSurface->h);
+
+
+	if (alphaMask != NULL)
+	{
+		for (int row=0;row<alphaMask->GetHeight();row++)
+		{
+			for (int col=0;col<alphaMask->GetWidth();col++)
+			{
+				int py = row + alphaMask->m_MaskY;
+				int px = col + alphaMask->m_MaskX;
+
+				if (px < m_SdlSurface->w && py < m_SdlSurface->h)
+				{
+					BYTE* target = &texPixels[(py * m_SdlSurface->pitch) + (4 * px)];
+					target[3] = ((CBSurfaceSDL *)alphaMask)->GetAlphaAt(row,col);
+				}	
+			}
+		}
+	}
 
 	SDL_UnlockTexture(texture);
 }
 
+void CBSurfaceSDL::ApplyTextureMask(CBSurface* alphaMask)
+{
+	if (alphaMask == NULL || m_SdlSurface == NULL || m_Texture == NULL) return;
+	//CreateStreamedTextureFromSurface();
+	CopyPixelsToTexture(m_SdlSurface,m_Texture, alphaMask);
+}

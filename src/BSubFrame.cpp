@@ -25,6 +25,7 @@ THE SOFTWARE.
 
 #include "dcgf.h"
 #include "BSubFrame.h"
+#include "BSurfaceSDL.h"
 
 
 
@@ -34,7 +35,7 @@ IMPLEMENT_PERSISTENT(CBSubFrame, false);
 CBSubFrame::CBSubFrame(CBGame* inGame):CBScriptable(inGame, true)
 {
 	m_Surface = NULL;
-	m_IsMasked = false;
+
 	m_HotspotX = m_HotspotY = 0;
 	m_Alpha = 0xFFFFFFFF;
 	m_Transparent = 0xFFFF00FF;
@@ -368,14 +369,61 @@ HRESULT CBSubFrame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *T
 		else Stack->PushString(m_SurfaceFilename);
 		return S_OK;
 	}
-	if(strcmp(Name, "SetMask")==0)
+	else if(strcmp(Name, "LoadAlphaMask")==0)
 	{
-		Stack->CorrectParams(0);
-			
-		m_IsMasked = true;
+		Stack->CorrectParams(1);
 
+		CScValue* Val = Stack->Pop();
+
+		if(Val->IsNULL())
+		{
+			Stack->PushBool(false);
+			return S_OK;
+		}
+		else
+		{
+			char* Filename = Val->GetString();
+			m_AlphaMask = new CBSurfaceSDL(Game);
+			if(!m_AlphaMask) return NULL;
+
+			if(FAILED(m_AlphaMask->Create(Filename,true,0,0,0)))
+			{
+				delete m_AlphaMask;
+				return NULL;
+			}
+
+					
+			m_Surface->ApplyTextureMask(m_AlphaMask);
+			
+			Stack->PushBool(true);
+			return S_OK;
+		}
+	}
+	else if(strcmp(Name, "MoveMask")==0)
+	{
+		if (m_AlphaMask == NULL)
+		{
+			Stack->PushBool(false);
+			return S_OK;
+		}
+
+		Stack->CorrectParams(2);
+		CScValue* maskX = Stack->Pop();
+		CScValue* maskY = Stack->Pop();
+
+		if(maskX->IsNULL() || maskY->IsNULL()) 
+		{
+			Stack->PushBool(false);
+			return S_OK;
+		}
+
+		m_AlphaMask->m_MaskX = maskX->GetInt();
+		m_AlphaMask->m_MaskY = maskY->GetInt();
+
+		m_Surface->ApplyTextureMask(m_AlphaMask);
 		Stack->PushBool(true);
 		return S_OK;
+
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -419,7 +467,7 @@ HRESULT CBSubFrame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *T
 		else
 		{
 			char* Filename = Val->GetString();
-			if(SUCCEEDED(SetSurface(Filename,true,0,0,0,-1,false,true)))				
+			if(SUCCEEDED(SetSurface(Filename,true,0,0,0,-1,true,true)))				
 			{
 				SetDefaultRect();
 				Stack->PushBool(true);
@@ -529,6 +577,23 @@ CScValue* CBSubFrame::ScGetProperty(char *Name)
 		m_ScValue->SetInt(m_HotspotY);
 		return m_ScValue;
 	}
+	else if(strcmp(Name, "MaskX")==0)
+	{
+	
+		m_ScValue->SetInt(m_AlphaMask->m_MaskX);
+		return m_ScValue;
+	}
+	else if(strcmp(Name, "MaskY")==0)
+	{
+		m_ScValue->SetInt(m_AlphaMask->m_MaskY);
+		return m_ScValue;
+	}
+
+	else if(strcmp(Name, "Type")==0)
+	{
+		m_ScValue->SetString("subframe");
+		return m_ScValue;
+	}
 
 	else return CBScriptable::ScGetProperty(Name);
 }
@@ -608,7 +673,24 @@ HRESULT CBSubFrame::ScSetProperty(char *Name, CScValue *Value)
 		m_HotspotY = Value->GetInt();
 		return S_OK;
 	}
-
+	else if(strcmp(Name, "MaskX")==0)
+	{
+		if (m_AlphaMask != NULL)
+		{
+			m_AlphaMask->m_MaskX = Value->GetInt();
+			m_Surface->ApplyTextureMask(m_AlphaMask);
+		}
+		return S_OK;
+	}
+	else if(strcmp(Name, "MaskY")==0)
+	{
+		if (m_AlphaMask != NULL)
+		{
+			m_AlphaMask->m_MaskY = Value->GetInt();
+			m_Surface->ApplyTextureMask(m_AlphaMask);
+		}
+		return S_OK;
+	}
 	else return CBScriptable::ScSetProperty(Name, Value);
 }
 

@@ -63,11 +63,15 @@ public:
 	virtual HRESULT StartPixelOp();
 	virtual HRESULT EndPixelOp();
 	virtual bool IsTransparentAtLite(int X, int Y);
+	virtual void ApplyTextureMask(CBSurface* alphaMask = NULL);
 
-	
+	//	virtual void CopyPixelsToTexture(SDL_Surface* surface, SDL_Texture *texture, CBSurface* alphaMask = NULL);
+
 	void SetFilename(char* Filename);
 	void SetSize(int Width, int Height);
 	
+	int m_MaskX;
+	int m_MaskY;
 
 	int m_ReferenceCount;
 	char* m_Filename;

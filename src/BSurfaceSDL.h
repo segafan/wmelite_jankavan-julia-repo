@@ -38,7 +38,7 @@ public:
 	CBSurfaceSDL(CBGame* inGame);
 	~CBSurfaceSDL();
 
-	void CopyPixelsToTexture(SDL_Surface* surface, SDL_Texture *texture);
+	void CopyPixelsToTexture(SDL_Surface* surface, SDL_Texture *texture, CBSurface* alphaMask=NULL);
 	void CreateStreamedTextureFromSurface();
 
 	HRESULT Create(char* Filename, bool default_ck, BYTE ck_red, BYTE ck_green, BYTE ck_blue, int LifeTime=-1, bool KeepLoaded=false, bool KeepSurfaceCached=false);
@@ -66,11 +66,12 @@ public:
 	static long DLL_CALLCONV TellProc(fi_handle handle);
 
 	void FillTexture(const void* pixelData, int pitch, CBSurfaceSDL* alphaTexture = NULL);
-
+	void ApplyTextureMask(CBSurface* alphaMask = NULL);
 
 private:
 	SDL_Texture* m_Texture;
 	SDL_Surface* m_SdlSurface;
+	BYTE *CachedPixels;
 
 	HRESULT DrawSprite(int X, int Y, RECT* Rect, float ZoomX, float ZoomY, DWORD Alpha, bool AlphaDisable, TSpriteBlendMode BlendMode, bool MirrorX, bool MirrorY, int offsetX = 0, int offsetY = 0, int originX = 0, int originY = 0, float angle = 0.0f);
 	void GenAlphaMask(SDL_Surface* surface);
