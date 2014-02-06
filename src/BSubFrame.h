@@ -49,9 +49,6 @@ public:
 	bool GetBoundingRect(LPRECT Rect, int X, int Y, float ScaleX=100, float ScaleY=100);
 	void ApplyMask();
 
-	bool m_IsMasked;
-
-
 	int m_HotspotX;
 	int m_HotspotY;
 	DWORD m_Alpha;
@@ -69,6 +66,7 @@ public:
 	bool m_3DOnly;
 
 	CBSurface* m_Surface;
+	CBSurface* m_AlphaMask;
 
 	// scripting interface
 	virtual CScValue* ScGetProperty(char* Name);
