@@ -537,7 +537,7 @@ void CBSurfaceSDL::CopyPixelsToTexture(SDL_Surface* surface, SDL_Texture *textur
 				int py = row + alphaMask->m_MaskY;
 				int px = col + alphaMask->m_MaskX;
 
-				if (px < m_SdlSurface->w && py < m_SdlSurface->h)
+				if (px < m_SdlSurface->w && py < m_SdlSurface->h && px >=0 && py >=0)
 				{
 					BYTE* target = &texPixels[(py * m_SdlSurface->pitch) + (4 * px)];
 					target[3] = ((CBSurfaceSDL *)alphaMask)->GetAlphaAt(row,col);
