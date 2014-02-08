@@ -57,14 +57,20 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 	bool windowedMode = false;
 	
 
-	// parse command line
+	// parse command linex	
 	char* SaveGame = NULL;
 	char param[MAX_PATH];
 	for(int i = 0; i < argc; i++)
 	{
 		strcpy(param, argv[i]);
 
-		if(CBPlatform::stricmp(param, "-project")==0)
+		// this is so we can use this from project manager
+		if(CBPlatform::stricmp(param, "-detect")==0)
+		{
+			windowedMode = true;
+			Game->DEBUG_DebugEnable("./wme.log");
+		}
+		else if(CBPlatform::stricmp(param, "-project")==0)
 		{
 			if (argc > i) strcpy(param, argv[i + 1]);
 			else param[0] = '\0';
