@@ -1850,9 +1850,11 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		bool ret = false;
 
 
-
-		CBImage* Image = ((CBRenderSDL *)Game->m_Renderer)->StoredScreenshot;
-		if(!Image) return E_FAIL;
+		if (Game->m_Renderer->GetStoredScreenshot() == NULL)
+				Game->m_Renderer->TakeScreenshot();
+		
+		CBImage* Image = Game->m_Renderer->GetStoredScreenshot();
+		
 
 		if(Image)
 		{
@@ -1876,7 +1878,13 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		int SizeY = Stack->Pop()->GetInt(m_Renderer->m_Height);
 
 		bool ret = false;
-		CBImage* Image; // = Game->m_Renderer->TakeScreenshot();
+
+		
+		if (Game->m_Renderer->GetStoredScreenshot() == NULL)
+			Game->m_Renderer->TakeScreenshot();
+		
+		CBImage* Image = Game->m_Renderer->GetStoredScreenshot();
+		
 		if(Image)
 		{
 			ret = SUCCEEDED(Image->Resize(SizeX, SizeY));

@@ -58,8 +58,12 @@ HRESULT CBSaveThumbHelper::StoreThumbnail(bool DoFlip)
 			Game->m_Renderer->Flip();
 		}
 
-		
+
+		if (Game->m_Renderer->GetStoredScreenshot() == NULL)
+				Game->m_Renderer->TakeScreenshot();
+
 		CBImage* Screenshot = Game->m_Renderer->GetStoredScreenshot();
+
 		if(!Screenshot) return E_FAIL;
 
 		// normal thumbnail

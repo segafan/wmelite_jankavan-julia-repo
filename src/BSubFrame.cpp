@@ -63,7 +63,7 @@ CBSubFrame::~CBSubFrame()
 {
 	if(m_Surface) Game->m_SurfaceStorage->RemoveSurface(m_Surface);
 	SAFE_DELETE_ARRAY(m_SurfaceFilename);
-	if (m_AlphaMask)
+	if (m_AlphaMask != NULL)
 		delete m_AlphaMask;
 }
 
