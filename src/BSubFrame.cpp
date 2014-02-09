@@ -43,7 +43,8 @@ CBSubFrame::CBSubFrame(CBGame* inGame):CBScriptable(inGame, true)
 	CBPlatform::SetRectEmpty(&m_Rect);
 
 	m_EditorSelected = false;
-
+	
+	m_AlphaMask = NULL;
 	m_SurfaceFilename = NULL;
 	m_CKDefault = true;
 	m_CKRed = m_CKBlue = m_CKGreen = 0;
@@ -62,6 +63,8 @@ CBSubFrame::~CBSubFrame()
 {
 	if(m_Surface) Game->m_SurfaceStorage->RemoveSurface(m_Surface);
 	SAFE_DELETE_ARRAY(m_SurfaceFilename);
+	if (m_AlphaMask)
+		delete m_AlphaMask;
 }
 
 

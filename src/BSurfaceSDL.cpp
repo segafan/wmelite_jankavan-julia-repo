@@ -48,7 +48,7 @@ CBSurfaceSDL::~CBSurfaceSDL()
 {
 	if (m_Texture) SDL_DestroyTexture(m_Texture);
 	SAFE_DELETE_ARRAY(m_AlphaMask);
-
+	SAFE_DELETE_ARRAY(CachedPixels);
 	Game->AddMem(-m_Width * m_Height * 4);
 }
 
