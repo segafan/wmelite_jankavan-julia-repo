@@ -71,6 +71,7 @@ private:
 	float GetMovieTime();
 
 	bool m_FreezePaused;
+	float m_FrozenTime;
 
 	CBFile* m_File;
 	char* m_Filename;

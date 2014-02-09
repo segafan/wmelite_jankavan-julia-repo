@@ -245,7 +245,12 @@ HRESULT CVidTheoraPlayer::Pause()
 	if(m_State == THEORA_STATE_PLAYING)
 	{
 		m_State = THEORA_STATE_PAUSED;
-		if (m_Clip) m_Clip->pause();
+		if (m_Clip) 
+		{
+			m_FrozenTime = m_Clip->getTimePosition();
+			m_Clip->pause();
+			
+		}
 		//if (m_Sound) m_Sound->Pause();
 		return S_OK;
 	}
@@ -259,6 +264,9 @@ HRESULT CVidTheoraPlayer::Resume()
 	{
 		m_State = THEORA_STATE_PLAYING;
 		if (m_Clip) m_Clip->play();
+
+		m_Clip->seek(m_FrozenTime);
+
 		//if (m_Sound) m_Sound->Resume();
 		m_FreezePaused = false;
 		return S_OK;
