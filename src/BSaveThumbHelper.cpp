@@ -25,6 +25,7 @@ THE SOFTWARE.
 
 #include "dcgf.h"
 #include "BSaveThumbHelper.h"
+#include "BRenderer.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -57,7 +58,8 @@ HRESULT CBSaveThumbHelper::StoreThumbnail(bool DoFlip)
 			Game->m_Renderer->Flip();
 		}
 
-		CBImage* Screenshot = Game->m_Renderer->TakeScreenshot();
+		
+		CBImage* Screenshot = Game->m_Renderer->GetStoredScreenshot();
 		if(!Screenshot) return E_FAIL;
 
 		// normal thumbnail
