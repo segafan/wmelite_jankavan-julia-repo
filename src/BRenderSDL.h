@@ -49,7 +49,11 @@ public:
 
 	HRESULT DrawLine(int X1, int Y1, int X2, int Y2, DWORD Color);
 
-	CBImage* TakeScreenshot();
+	void TakeScreenshot();
+	bool ObtainScreenshot;
+
+	CBImage* StoredScreenshot;
+	CBImage* GetStoredScreenshot();
 
 	SDL_Renderer* GetSdlRenderer() const { return m_Renderer; }
 	SDL_Window* GetSdlWindow() const { return m_Win; }

@@ -1822,6 +1822,14 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	//////////////////////////////////////////////////////////////////////////
 	// Screenshot
 	//////////////////////////////////////////////////////////////////////////
+	else if(strcmp(Name, "PrepareScreenshot")==0)
+	{
+		Stack->CorrectParams(0);
+		((CBRenderSDL *)Game->m_Renderer)->StoredScreenshot = NULL;
+		((CBRenderSDL *)Game->m_Renderer)->ObtainScreenshot = true;
+		Stack->PushBool(true);
+		return S_OK;
+	}
 	else if(strcmp(Name, "Screenshot")==0)
 	{
 		Stack->CorrectParams(1);
@@ -1840,7 +1848,12 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		}
 
 		bool ret = false;
-		CBImage* Image = Game->m_Renderer->TakeScreenshot();
+
+
+
+		CBImage* Image = ((CBRenderSDL *)Game->m_Renderer)->StoredScreenshot;
+		if(!Image) return E_FAIL;
+
 		if(Image)
 		{
 			ret = SUCCEEDED(Image->SaveBMPFile(Filename));
@@ -1863,7 +1876,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		int SizeY = Stack->Pop()->GetInt(m_Renderer->m_Height);
 
 		bool ret = false;
-		CBImage* Image = Game->m_Renderer->TakeScreenshot();
+		CBImage* Image; // = Game->m_Renderer->TakeScreenshot();
 		if(Image)
 		{
 			ret = SUCCEEDED(Image->Resize(SizeX, SizeY));
@@ -2356,6 +2369,12 @@ CScValue* CBGame::ScGetProperty(char *Name)
 	else if(strcmp(Name, "ScreenHeight")==0)
 	{
 		m_ScValue->SetInt(m_Renderer->m_Height);
+		return m_ScValue;
+	}
+
+	else if(strcmp(Name, "ScreenshotPrepared")==0)
+	{
+		m_ScValue->SetBool(((CBRenderSDL *) Game->m_Renderer)->StoredScreenshot != NULL);
 		return m_ScValue;
 	}
 

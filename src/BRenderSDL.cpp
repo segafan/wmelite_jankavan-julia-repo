@@ -39,6 +39,7 @@ CBRenderSDL::CBRenderSDL(CBGame* inGame) : CBRenderer(inGame)
 	m_BorderLeft = m_BorderRight = m_BorderTop = m_BorderBottom = 0;
 	m_RatioX = m_RatioY = 1.0f;
 	m_PixelPerfect = false;
+	ObtainScreenshot = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -220,6 +221,8 @@ HRESULT CBRenderSDL::SendRenderingHintSceneComplete()
 
 	m_RenderOffscreen = false;
 
+	
+
 	return S_OK;
 }
 
@@ -282,6 +285,12 @@ HRESULT CBRenderSDL::Flip()
 	}
 
 	SDL_RenderPresent(m_Renderer);
+
+	if (ObtainScreenshot)
+	{
+		ObtainScreenshot = false;
+		TakeScreenshot();
+	}
 
 	return S_OK;
 }
@@ -381,58 +390,55 @@ HRESULT CBRenderSDL::DrawLine(int X1, int Y1, int X2, int Y2, DWORD Color)
 }
 
 //////////////////////////////////////////////////////////////////////////
-CBImage* CBRenderSDL::TakeScreenshot()
+void CBRenderSDL::TakeScreenshot()
 {
+
 
 	SDL_Surface* surface = NULL;
 	surface = SDL_GetWindowSurface(m_Win);
-	if (!surface) return NULL;
+	if (!surface) return; // NULL;
 
-	unsigned char * pixels = new unsigned char[surface->w * surface->h * surface->format->BytesPerPixel];
-	if (pixels == 0) return NULL;
 
-	if (SDL_RenderReadPixels(GetSdlRenderer(), &surface->clip_rect, SDL_PIXELFORMAT_RGB888, pixels, surface->w * 3) != 0)
+	if (SDL_RenderReadPixels(GetSdlRenderer(), &surface->clip_rect, surface->format->format, surface->pixels, surface->w * surface->format->BytesPerPixel) != 0) 
 	{
 		SDL_GetError();
-		return NULL;
+		return;// NULL;
 	}
 
-	/* DEBUG to see if that bullshit actually works. It doesn't... */
 
-	int rr = 0;
-	for (int x=0;x<surface->w * surface->h * 3;x++)
-	{
-		if (pixels[x] !=0)
-		{
-			rr++;
-		}
-	}
 
-	rr++;
+    SDL_PixelFormat fmt;
+
+	fmt.palette = NULL;
+	fmt.BitsPerPixel = 24;
+	fmt.BytesPerPixel = 3;
+	fmt.format = SDL_PIXELFORMAT_RGB24;
+	fmt.Rmask = surface->format->Rmask;
+	fmt.Gmask = surface->format->Gmask;
+	fmt.Gmask = surface->format->Bmask;
+
+
+
+
+	SDL_Surface* saveSurface = SDL_ConvertSurface(surface,&fmt,0);
 	
-
-	SDL_Surface* saveSurface = SDL_CreateRGBSurfaceFrom(pixels, surface->w, surface->h, surface->format->BitsPerPixel, surface->w * surface->format->BytesPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask);
-    if (saveSurface == NULL) 
-	{
-		SDL_GetError();
-		return NULL;
-    }
+	if (saveSurface == NULL) return;
+	
 		
-	FIBITMAP* dib = FreeImage_Allocate(saveSurface->w, saveSurface->h, 24, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK);
+	FIBITMAP* dib = FreeImage_Allocate(surface->w, surface->h, 24, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK);
 	
-	for (unsigned y = 0; y < FreeImage_GetHeight(dib) - 50; y++)	
+	for (unsigned y = 0; y < FreeImage_GetHeight(dib); y++)	
 	{
 			BYTE* bits = FreeImage_GetScanLine(dib, y);
-			BYTE* src = (BYTE*)pixels + y * saveSurface->pitch;
-			memcpy(bits, src, surface->w * 3);
+			BYTE* src = (BYTE*)saveSurface->pixels + (FreeImage_GetHeight(dib) - y - 1) * saveSurface->pitch;
+			memcpy(bits, src, surface->w * saveSurface->format->BytesPerPixel);
 	}
 
 
 	SDL_FreeSurface(saveSurface);
 	SDL_FreeSurface(surface);
-	delete[] pixels;
 	
-	return new CBImage(Game, dib);
+	StoredScreenshot = new CBImage(Game, dib);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -616,4 +622,9 @@ float CBRenderSDL::GetAlignedDownscalingRatio(float ratio, float stepping)
 void CBRenderSDL::SetBrightness(float brightness)
 {
 	 SDL_SetWindowBrightness(m_Win,brightness);
+}
+
+CBImage* CBRenderSDL::GetStoredScreenshot()
+{
+	return StoredScreenshot;
 }

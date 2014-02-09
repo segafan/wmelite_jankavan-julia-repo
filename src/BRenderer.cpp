@@ -43,6 +43,9 @@ CBRenderer::CBRenderer(CBGame* inGame):CBBase(inGame)
 
 	m_RealWidth = m_RealHeight = 0;
 	m_DrawOffsetX = m_DrawOffsetY = 0;
+
+	ObtainScreenshot = false;
+	this->StoredScreenshot = NULL;
 }
 
 
@@ -51,6 +54,11 @@ CBRenderer::~CBRenderer()
 {
 	DeleteRectList();
 	UnclipCursor();
+}
+
+CBImage* CBRenderer::GetStoredScreenshot() 
+{
+	return NULL;
 }
 
 
@@ -244,9 +252,9 @@ HRESULT CBRenderer::SetViewport(RECT* Rect)
 
 
 //////////////////////////////////////////////////////////////////////////
-CBImage* CBRenderer::TakeScreenshot()
+void CBRenderer::TakeScreenshot()
 {
-	return NULL;
+	return;
 }
 
 

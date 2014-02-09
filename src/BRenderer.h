@@ -40,7 +40,12 @@ public:
 	int m_DrawOffsetY;
 
 	virtual void DumpData(char* Filename){};
-	virtual CBImage* TakeScreenshot();
+	virtual void TakeScreenshot();
+	CBImage* StoredScreenshot;
+	bool ObtainScreenshot;
+	virtual CBImage* GetStoredScreenshot();
+
+
 	virtual HRESULT SetViewport(int left, int top, int right, int bottom);
 	virtual HRESULT SetViewport(RECT* Rect);
 	virtual HRESULT SetScreenViewport();
