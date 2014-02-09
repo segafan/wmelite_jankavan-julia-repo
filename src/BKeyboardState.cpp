@@ -83,6 +83,137 @@ HRESULT CBKeyboardState::ScCallMethod(CScScript* Script, CScStack *Stack, CScSta
 }
 
 
+
+int CBKeyboardState::ConvertSDLCodeToWME(DWORD sdlCode)
+{
+
+
+	switch (sdlCode)
+	{
+		case SDLK_F1:
+			return 112;
+			break;
+		case SDLK_F2:
+			return 113;
+			break;
+		case SDLK_F3:
+			return 114;
+			break;
+		case SDLK_F4:
+			return 115;
+			break;
+		case SDLK_F5:
+			return 116;
+			break;
+		case SDLK_F6:
+			return 117;
+			break;
+		case SDLK_F7:
+			return 118;
+			break;
+		case SDLK_F8:
+			return 119;
+			break;
+		case SDLK_F9:
+			return 120;
+			break;
+		case SDLK_F10:
+			return 121;
+			break;
+		case SDLK_F11:
+			return 122;
+			break;
+		case SDLK_F12:
+			return 123;
+			break;
+// ARROWS
+		case SDLK_LEFT:
+			return 37;
+			break;
+		case SDLK_UP:
+			return 38;
+			break;
+		case SDLK_RIGHT:
+			return 39;
+			break;
+		case SDLK_DOWN:
+			return 40;
+			break;
+// Numpad keys
+		case SDLK_KP_0:
+			return 96;
+			break;
+		case SDLK_KP_1:
+			return 97;
+			break;
+		case SDLK_KP_2:
+			return 98;
+			break;
+		case SDLK_KP_3:
+			return 99;
+			break;
+		case SDLK_KP_4:
+			return 100;
+			break;
+		case SDLK_KP_5:
+			return 101;
+			break;
+		case SDLK_KP_6:
+			return 102;
+			break;
+		case SDLK_KP_7:
+			return 103;
+			break;
+		case SDLK_KP_8:
+			return 104;
+			break;
+		case SDLK_KP_9:
+			return 105;
+			break;
+
+// Silent keys
+		case SDLK_BACKSPACE:
+			return 8;
+			break;
+		case SDLK_TAB:
+			return 9;
+			break;
+		case SDLK_SPACE:
+			return 32;
+			break;
+		case SDLK_ESCAPE:
+			return 27;
+			break;
+		case SDLK_LSHIFT:
+			return 160;
+			break; 
+		case SDLK_RSHIFT:
+			return 161;
+			break;
+		case SDLK_LCTRL:
+			return 162;
+			break; 
+		case SDLK_RCTRL:
+			return 163;
+			break; 
+		case SDLK_INSERT:
+			return 45;
+			break; 
+		case SDLK_DELETE:
+			return 46;
+			break;
+		case SDLK_HOME:
+			return 36;
+			break; 
+		case SDLK_END:
+			return 35;
+			break;
+
+	}
+
+	return sdlCode;
+}
+
 //////////////////////////////////////////////////////////////////////////
 CScValue* CBKeyboardState::ScGetProperty(char *Name)
 {
@@ -123,7 +254,7 @@ CScValue* CBKeyboardState::ScGetProperty(char *Name)
 	// KeyCode
 	//////////////////////////////////////////////////////////////////////////
 	else if(strcmp(Name, "KeyCode")==0){
-		m_ScValue->SetInt(m_CurrentCharCode);
+		m_ScValue->SetInt(ConvertSDLCodeToWME(m_CurrentCharCode));
 		return m_ScValue;
 	}
 
@@ -134,7 +265,6 @@ CScValue* CBKeyboardState::ScGetProperty(char *Name)
 		m_ScValue->SetBool(m_CurrentShift);
 		return m_ScValue;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	// IsAlt
 	//////////////////////////////////////////////////////////////////////////
@@ -183,7 +313,10 @@ char* CBKeyboardState::ScToString()
 HRESULT CBKeyboardState::ReadKey(SDL_Event* event)
 {
 	m_CurrentPrintable = (event->type == SDL_TEXTINPUT);
-	m_CurrentCharCode = KeyCodeToVKey(event);
+	int code = KeyCodeToVKey(event);
+	
+	if (code != 0)
+		m_CurrentCharCode = code; 
 	//m_CurrentKeyData = KeyData;
 
 	m_CurrentControl = IsControlDown();
