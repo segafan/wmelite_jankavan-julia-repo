@@ -384,10 +384,6 @@ HRESULT CBRenderSDL::DrawLine(int X1, int Y1, int X2, int Y2, DWORD Color)
 CBImage* CBRenderSDL::TakeScreenshot()
 {
 
-	SDL_Rect viewport;
-
-	SDL_RenderGetViewport(GetSdlRenderer(), &viewport);
-	
 	SDL_Surface* surface = NULL;
 	surface = SDL_GetWindowSurface(m_Win);
 	if (!surface) return NULL;
@@ -395,16 +391,16 @@ CBImage* CBRenderSDL::TakeScreenshot()
 	unsigned char * pixels = new unsigned char[surface->w * surface->h * surface->format->BytesPerPixel];
 	if (pixels == 0) return NULL;
 
-	if (SDL_RenderReadPixels(GetSdlRenderer(), &surface->clip_rect, surface->format->format, pixels, surface->w * surface->format->BytesPerPixel) != 0)
+	if (SDL_RenderReadPixels(GetSdlRenderer(), &surface->clip_rect, SDL_PIXELFORMAT_RGB888, pixels, surface->w * 3) != 0)
 	{
 		SDL_GetError();
 		return NULL;
 	}
 
-	/* DEBUG to see if that bullshit actually works. It doesn't...
+	/* DEBUG to see if that bullshit actually works. It doesn't... */
 
 	int rr = 0;
-	for (int x=0;x<surface->w * surface->h * surface->format->BytesPerPixel;x++)
+	for (int x=0;x<surface->w * surface->h * 3;x++)
 	{
 		if (pixels[x] !=0)
 		{
@@ -413,7 +409,7 @@ CBImage* CBRenderSDL::TakeScreenshot()
 	}
 
 	rr++;
-	*/
+	
 
 	SDL_Surface* saveSurface = SDL_CreateRGBSurfaceFrom(pixels, surface->w, surface->h, surface->format->BitsPerPixel, surface->w * surface->format->BytesPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask);
     if (saveSurface == NULL) 
@@ -427,8 +423,8 @@ CBImage* CBRenderSDL::TakeScreenshot()
 	for (unsigned y = 0; y < FreeImage_GetHeight(dib) - 50; y++)	
 	{
 			BYTE* bits = FreeImage_GetScanLine(dib, y);
-			BYTE* src = (BYTE*)saveSurface->pixels + y * saveSurface->pitch;
-			memcpy(bits, src, saveSurface->pitch);
+			BYTE* src = (BYTE*)pixels + y * saveSurface->pitch;
+			memcpy(bits, src, surface->w * 3);
 	}
 
 
