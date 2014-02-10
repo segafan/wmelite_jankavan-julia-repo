@@ -59,18 +59,61 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) return E_FAIL;
 	
-	SDL_DisplayMode current;
+	SDL_DisplayMode testResolution;
+	SDL_DisplayMode tmpResolution;
 	
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
 
-	SDL_GetCurrentDisplayMode(0,&current);
+	const SDL_DisplayMode* current = NULL;
+	
+	SDL_GetCurrentDisplayMode(0,&tmpResolution);
+
+	float gameRatio = width / height;
+	float screenRatio = tmpResolution.w / tmpResolution.h;
+	
+	if (gameRatio == screenRatio)
+	{
+		current = &tmpResolution;
+		m_RealWidth = width;
+		m_RealHeight = height;
+	}
+	else
+	{
+		for (int i=0;i<SDL_GetNumDisplayModes(0); i++)
+		{
+			if (SDL_GetDisplayMode(0,i,&testResolution) == 0)
+			{
+				 float tmpRatio = testResolution.w / testResolution.h;
+				 if (tmpRatio == screenRatio)
+				 {
+					 if (testResolution.w >= width && testResolution.h >= height &&
+						 testResolution.w <= tmpResolution.w && testResolution.h <= tmpResolution.h)
+					 {
+						 tmpResolution = testResolution;
+					 }
+				 }
+				 	
+			}
+		}
+	}
+
+
+	if (current == NULL)
+	{
+			if (tmpResolution.w == 0) SDL_GetCurrentDisplayMode(0,&tmpResolution);			
+			current = &tmpResolution;
+			m_RealWidth = current->w;
+			m_RealHeight = current->h;
+	}
+	
+	
 
 	m_Width = width;
 	m_Height = height;
 
-	m_RealWidth = current.w;
-	m_RealHeight = current.h;
+	m_RealWidth = current->w;
+	m_RealHeight = current->h;
 
 	m_PixelPerfect = pixelPerfectRendering;
 
@@ -165,6 +208,7 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	
 	if (!m_Win) return E_FAIL;
 
+	SDL_SetWindowDisplayMode(m_Win, current);	
 	SDL_ShowCursor(SDL_DISABLE);
 
 	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
