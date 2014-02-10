@@ -57,10 +57,10 @@ public:
 	virtual char* ScToString();
 
 private:
-	int CBKeyboardState::ConvertSDLCodeToWME(DWORD sdlCode);
+	int ConvertSDLCodeToWME(DWORD sdlCode);
 	DWORD KeyCodeToVKey(SDL_Event* event);
 	SDL_Keycode VKeyToKeyCode(DWORD vkey);
-	char CBKeyboardState::ConvertWMEChars();
+	char ConvertWMEChars();
 };
 
 #endif
