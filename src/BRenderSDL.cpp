@@ -163,6 +163,8 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 
 	SDL_ShowCursor(SDL_DISABLE);
 
+	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+
 #ifdef __IPHONEOS__
 	// SDL defaults to OGL ES2, which doesn't work on old devices
 	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles");
