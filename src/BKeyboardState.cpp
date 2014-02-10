@@ -214,6 +214,51 @@ int CBKeyboardState::ConvertSDLCodeToWME(DWORD sdlCode)
 	return sdlCode;
 }
 
+
+char CBKeyboardState::ConvertWMEChars()
+{
+	char key[1];
+
+	switch (m_CurrentCharCode)
+	{
+		case SDLK_KP_0:
+			key[0] = '0';
+			break;
+		case SDLK_KP_1:
+			key[0] = '1';
+			break;
+		case SDLK_KP_2:
+			key[0] = '2';
+			break;
+		case SDLK_KP_3:
+			key[0] = '3';
+			break;
+		case SDLK_KP_4:
+			key[0] = '4';
+			break;
+		case SDLK_KP_5:
+			key[0] = '5';
+			break;
+		case SDLK_KP_6:
+			key[0] = '6';
+			break;
+		case SDLK_KP_7:
+			key[0] = '7';
+			break;
+		case SDLK_KP_8:
+			key[0] = '8';
+			break;
+		case SDLK_KP_9:
+			key[0] = '9';
+			break;
+		default:
+			key[0] = (char)m_CurrentCharCode;
+			break;
+	}
+
+	return key[0];	
+}
+
 //////////////////////////////////////////////////////////////////////////
 CScValue* CBKeyboardState::ScGetProperty(char *Name)
 {
@@ -233,7 +278,7 @@ CScValue* CBKeyboardState::ScGetProperty(char *Name)
 	else if(strcmp(Name, "Key")==0){
 		if(m_CurrentPrintable){
 			char key[2];
-			key[0] = (char)m_CurrentCharCode;
+			key[0] = ConvertWMEChars();
 			key[1] = '\0';
 			m_ScValue->SetString(key);
 		}

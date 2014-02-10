@@ -60,6 +60,7 @@ private:
 	int CBKeyboardState::ConvertSDLCodeToWME(DWORD sdlCode);
 	DWORD KeyCodeToVKey(SDL_Event* event);
 	SDL_Keycode VKeyToKeyCode(DWORD vkey);
+	char CBKeyboardState::ConvertWMEChars();
 };
 
 #endif
