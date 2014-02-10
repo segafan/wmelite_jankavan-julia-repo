@@ -28,7 +28,6 @@ THE SOFTWARE.
 #include "BSurfaceSDL.h"
 #include "FreeImage.h"
 #include "MathUtil.h"
-#include "sdl.h"
 
 //////////////////////////////////////////////////////////////////////////
 CBRenderSDL::CBRenderSDL(CBGame* inGame) : CBRenderer(inGame)
