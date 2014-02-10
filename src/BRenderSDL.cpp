@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "BSurfaceSDL.h"
 #include "FreeImage.h"
 #include "MathUtil.h"
+#include "sdl.h"
 
 //////////////////////////////////////////////////////////////////////////
 CBRenderSDL::CBRenderSDL(CBGame* inGame) : CBRenderer(inGame)
@@ -55,18 +56,21 @@ CBRenderSDL::~CBRenderSDL()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering)
 {
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) return E_FAIL;
 	
+	SDL_DisplayMode current;
 	
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
 
+	SDL_GetCurrentDisplayMode(0,&current);
 
 	m_Width = width;
 	m_Height = height;
 
-	m_RealWidth = width;
-	m_RealHeight = height;
+	m_RealWidth = current.w;
+	m_RealHeight = current.h;
 
 	m_PixelPerfect = pixelPerfectRendering;
 
@@ -89,8 +93,8 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 		}
 	}	
 #else
-	m_RealWidth = Game->m_Registry->ReadInt("Debug", "ForceResWidth", m_Width);
-	m_RealHeight = Game->m_Registry->ReadInt("Debug", "ForceResHeight", m_Height);
+/*	m_RealWidth = Game->m_Registry->ReadInt("Debug", "ForceResWidth", m_Width);
+	m_RealHeight = Game->m_Registry->ReadInt("Debug", "ForceResHeight", m_Height);*/
 #endif
 
 	// m_RealWidth = 1024;
