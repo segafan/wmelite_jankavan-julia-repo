@@ -351,6 +351,7 @@ HRESULT CBSubFrame::Persist(CBPersistMgr* PersistMgr)
 	PersistMgr->Transfer(TMEMBER(m_MirrorY));
 	PersistMgr->Transfer(TMEMBER(m_Transparent));
 
+	PersistMgr->Transfer(TMEMBER(m_AlphaMask));
 	return S_OK;
 }
 

@@ -399,7 +399,12 @@ HRESULT CBSurfaceSDL::DrawSprite(int X, int Y, RECT* Rect, float ZoomX, float Zo
 {
 	CBRenderSDL* renderer = static_cast<CBRenderSDL*>(Game->m_Renderer);
 
-	if (renderer->m_ForceAlphaColor != 0) Alpha = renderer->m_ForceAlphaColor;
+	 if (renderer->m_ForceAlphaColor != 0) 
+		Alpha = renderer->m_ForceAlphaColor; 	
+
+//	renderer->m_ForceAlphaColor = 0;
+
+//	AlphaDisable = false;
 
 	BYTE r = D3DCOLGetR(Alpha);
 	BYTE g = D3DCOLGetG(Alpha);
