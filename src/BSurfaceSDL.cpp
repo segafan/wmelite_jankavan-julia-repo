@@ -270,7 +270,8 @@ HRESULT CBSurfaceSDL::Create(int Width, int Height)
 
 	m_Width = Width;
 	m_Height = Height;
-	
+	EmptyTexture();
+
 	Game->AddMem(m_Width * m_Height * 4);
 
 	m_Valid = true;
@@ -505,6 +506,31 @@ void CBSurfaceSDL::FillTexture(const void* pixelData, int pitch, CBSurfaceSDL* a
 		SDL_UnlockTexture(m_Texture);
 	}
 }
+
+
+void CBSurfaceSDL::EmptyTexture()
+{
+		BYTE* texPixels;	
+		int texPitch;
+
+		SDL_LockTexture(m_Texture, NULL, (void**)&texPixels, &texPitch);	
+		
+		for (int row = 0; row < m_Height; row++)
+		{
+			for (int col = 0; col < m_Width; col++)
+			{
+				BYTE* target = &texPixels[row * texPitch + 4 * col];
+
+				target[0] = 0;
+				target[1] = 0;
+				target[2] = 0;
+				target[3] = 0;
+			}
+		}
+
+		SDL_UnlockTexture(m_Texture);
+}
+
 
 void CBSurfaceSDL::CreateStreamedTextureFromSurface()
 {

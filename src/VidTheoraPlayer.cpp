@@ -146,7 +146,7 @@ HRESULT CVidTheoraPlayer::Update()
 		// transfer the frame pixels to your display device, texure, graphical context or whatever you use.
 		m_Texture->FillTexture(frame->getBuffer(), frame->getStride() * 4, m_AlphaTexture);
 		m_Clip->popFrame();
-	}
+	} 
 	return S_OK;
 }
 

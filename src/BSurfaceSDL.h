@@ -66,6 +66,8 @@ public:
 	static long DLL_CALLCONV TellProc(fi_handle handle);
 
 	void FillTexture(const void* pixelData, int pitch, CBSurfaceSDL* alphaTexture = NULL);
+	void EmptyTexture();
+
 	void ApplyTextureMask(CBSurface* alphaMask = NULL);
 
 private:
