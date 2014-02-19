@@ -63,6 +63,8 @@ public:
 	CBSound(CBGame* inGame);
 	virtual ~CBSound();
 
+	HRESULT SetPitch(float Pitch);
+
 	HRESULT ApplyFX(TSFXType Type=SFX_NONE, float Param1=0, float Param2=0, float Param3=0, float Param4=0);
 
 	TSFXType m_SFXType;
