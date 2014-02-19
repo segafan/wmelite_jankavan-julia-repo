@@ -29,6 +29,7 @@ THE SOFTWARE.
 
 #include "BBase.h"
 #include "bass.h"
+#include "bass_fx.h"
 
 class CBSoundBuffer : public CBBase  
 {
@@ -62,6 +63,8 @@ public:
 	HRESULT LoadFromFile(const char* Filename, bool ForceReload=false);
 	void SetStreaming(bool Streamed, DWORD NumBlocks=0, DWORD BlockSize=0);
 	HRESULT ApplyFX(TSFXType Type, float Param1, float Param2, float Param3, float Param4);
+
+	HRESULT CBSoundBuffer::SetPitch(float freq);
 
 	HSTREAM m_Stream;
 	HSYNC m_Sync;

@@ -65,6 +65,9 @@ public:
 	HRESULT StopSFX(bool DeleteSound=true);
 	HRESULT PlaySFX(char* Filename, bool Looping=false, bool PlayNow=true, char* EventName=NULL, DWORD LoopStart=0);
 	CBSound* m_SFX;
+	
+
+	HRESULT SetSFXPitch(float Pitch);
 
 	TSFXType m_SFXType;
 	float m_SFXParam1;
@@ -115,6 +118,7 @@ public:
 	virtual HRESULT RestoreDeviceObjects()     { return S_OK; };
 	bool m_NonIntMouseEvents;
 
+	
 
 public:
 	// scripting interface

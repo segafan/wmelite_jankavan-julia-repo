@@ -292,6 +292,22 @@ HRESULT CBObject::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Thi
 		else Stack->PushBool(true);
 		return S_OK;
 	}
+	else if(strcmp(Name, "SetSoundPitch")==0){
+		Stack->CorrectParams(1);
+		CScValue* val1 = Stack->Pop();
+		if (val1->IsNULL())
+		{
+			Stack->PushBool(false);
+		}
+		else
+		{
+
+			float pitch = val1->GetFloat();	
+			if(FAILED(SetSFXPitch(pitch))) Stack->PushBool(false);
+			else Stack->PushBool(true);
+		}
+		return S_OK;
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	// PlaySoundEvent
@@ -1060,6 +1076,16 @@ HRESULT CBObject::SetSFXTime(DWORD Time)
 	else return S_OK;
 }
 
+
+
+
+HRESULT CBObject::SetSFXPitch(float Pitch)
+{
+	if(m_SFX) return m_SFX->SetPitch(Pitch);
+	else
+		return S_OK;
+
+}
 
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBObject::SetSFXVolume(int Volume)

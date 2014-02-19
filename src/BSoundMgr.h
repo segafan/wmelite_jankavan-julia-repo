@@ -58,6 +58,10 @@ public:
 	virtual ~CBSoundMgr();
 	CBArray<CBSoundBuffer*, CBSoundBuffer*> m_Sounds;
 	void SaveSettings();
+
+
+	// short 
+
 };
 
 #endif

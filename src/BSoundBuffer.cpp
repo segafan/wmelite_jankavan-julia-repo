@@ -104,12 +104,14 @@ HRESULT CBSoundBuffer::LoadFromFile(const char* Filename, bool ForceReload)
 	fileProc.seek = CBSoundBuffer::FileSeekProc;
 	fileProc.length = CBSoundBuffer::FileLenProc;
 
-	m_Stream = BASS_StreamCreateFileUser(STREAMFILE_NOBUFFER, 0, &fileProc, (void*)m_File);
+	m_Stream = BASS_StreamCreateFileUser(STREAMFILE_NOBUFFER, BASS_STREAM_DECODE, &fileProc, (void*)m_File);
 	if (!m_Stream)
 	{
 		Game->LOG(0, "BASS error: %d while loading '%s'", BASS_ErrorGetCode(), Filename);
 		return E_FAIL;
 	}
+	
+	m_Stream = BASS_FX_TempoCreate(m_Stream,BASS_SAMPLE_LOOP|BASS_FX_FREESOURCE);
 
 	CBUtils::SetString(&m_Filename, Filename);
 
@@ -185,6 +187,23 @@ HRESULT CBSoundBuffer::Resume()
 	if (m_Stream)
 	{
 		BASS_ChannelPlay(m_Stream, FALSE);
+	}
+	return S_OK;
+}
+
+HRESULT CBSoundBuffer::SetPitch(float pitch)
+{
+	int result = 0;
+	if (m_Stream)
+	{
+		if (!BASS_ChannelSetAttribute(m_Stream,BASS_ATTRIB_TEMPO_PITCH, pitch))
+		{
+			if (result != 0) return E_FAIL;
+		}
+	}
+	else
+	{
+		return E_FAIL;
 	}
 	return S_OK;
 }
@@ -383,3 +402,6 @@ BOOL CBSoundBuffer::FileSeekProc(QWORD offset, void *user)
 	CBFile* file = static_cast<CBFile*>(user);
 	return SUCCEEDED(file->Seek(offset));
 }
+
+
+

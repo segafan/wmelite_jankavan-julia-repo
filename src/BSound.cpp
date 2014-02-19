@@ -224,6 +224,14 @@ DWORD CBSound::GetPositionTime()
 }
 
 
+HRESULT CBSound::SetPitch(float Pitch)
+{
+	if (!m_Sound) return E_FAIL;
+	return m_Sound->SetPitch(Pitch);
+}
+
+
+
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSound::SetVolume(int Volume)
 {
