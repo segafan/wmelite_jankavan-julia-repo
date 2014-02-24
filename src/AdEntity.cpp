@@ -850,6 +850,18 @@ CScValue* CAdEntity::ScGetProperty(char *Name)
 		m_ScValue->SetInt(m_WalkToX);
 		return m_ScValue;
 	}
+	else if (strcmp(Name, "TheoraPosition")==0)
+	{
+
+		if (m_Theora)
+		{
+			m_ScValue->SetFloat(m_Theora->GetMovieTime());
+		}
+		else
+			m_ScValue->SetNULL();
+
+		return m_ScValue;
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	// WalkToY
