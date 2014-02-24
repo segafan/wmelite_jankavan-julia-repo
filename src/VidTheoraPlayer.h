@@ -64,11 +64,13 @@ public:
 	int m_PosX;
 	int m_PosY;
 
+	float GetMovieTime();
+
 private:
 	void SetDefaults();
 	void Cleanup();
 	HRESULT SeekToTime(DWORD time);
-	float GetMovieTime();
+	
 
 	bool m_FreezePaused;
 	float m_FrozenTime;
