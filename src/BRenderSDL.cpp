@@ -56,8 +56,15 @@ CBRenderSDL::~CBRenderSDL()
 HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering)
 {
 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) return E_FAIL;
+	Game->LOG(0,"a");
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) 
+	{
+	    Game->LOG(0,SDL_GetError());
+	    return E_FAIL;
+	}
 	
+	Game->LOG(0,"b");
+
 	SDL_DisplayMode testResolution;
 	SDL_DisplayMode tmpResolution;
 	

@@ -64,7 +64,7 @@ public:
 	void SetStreaming(bool Streamed, DWORD NumBlocks=0, DWORD BlockSize=0);
 	HRESULT ApplyFX(TSFXType Type, float Param1, float Param2, float Param3, float Param4);
 
-	HRESULT CBSoundBuffer::SetPitch(float freq);
+	HRESULT SetPitch(float freq);
 
 	HSTREAM m_Stream;
 	HSYNC m_Sync;
