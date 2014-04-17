@@ -673,8 +673,11 @@ HRESULT CAdEntity::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 		CScValue* ValAlpha = Stack->Pop();
 		int StartTime = Stack->Pop()->GetInt();
 
-		SAFE_DELETE(m_Theora);
-		m_Theora = new CVidTheoraPlayer(Game);
+		// SAFE_DELETE(m_Theora);
+		
+		if (m_Theora == NULL)
+			m_Theora = new CVidTheoraPlayer(Game);
+
 		if (m_Theora && SUCCEEDED(m_Theora->Initialize(Filename)))
 		{
 			if (!ValAlpha->IsNULL()) m_Theora->SetAlphaImage(ValAlpha->GetString());

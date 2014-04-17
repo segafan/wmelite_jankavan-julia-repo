@@ -107,7 +107,9 @@ HRESULT CVidTheoraPlayer::Initialize(char* filename, char* subtitleFile)
 
 	if (m_Clip)
 	{
-		m_Texture = new CBSurfaceSDL(Game);
+		if (m_Texture == NULL)
+			m_Texture = new CBSurfaceSDL(Game);
+
 		m_Texture->Create(m_Clip->getWidth(), m_Clip->getHeight());
 	}
 
