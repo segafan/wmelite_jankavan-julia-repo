@@ -43,8 +43,9 @@ CSXArray::CSXArray(CBGame* inGame, CScStack* Stack):CBScriptable(inGame)
 	// NEED to ask if there are any issues I've just caused with this fix...
 
 
-	if(NumParams==0) m_Length = Stack->Pop()->GetInt(0);
-	else if(NumParams>=1){
+//	if(NumParams==0) m_Length = Stack->Pop()->GetInt(0);
+	
+	if(NumParams>=1){
 		m_Length = NumParams;
 		char ParamName[20];
 		for(int i=0; i<NumParams; i++){
