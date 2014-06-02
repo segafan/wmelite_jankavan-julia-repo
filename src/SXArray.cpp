@@ -37,20 +37,18 @@ CSXArray::CSXArray(CBGame* inGame, CScStack* Stack):CBScriptable(inGame)
 
 	int NumParams = Stack->Pop()->GetInt(0);
 
-	// Originally there was 1 and >1 
-	// This made a serious problem when called a = new Array("X"); as the 
-	// item got swallowed and game would break.
-	// NEED to ask if there are any issues I've just caused with this fix...
-
-
-//	if(NumParams==0) m_Length = Stack->Pop()->GetInt(0);
-	
+			
 	if(NumParams>=1){
-		m_Length = NumParams;
-		char ParamName[20];
-		for(int i=0; i<NumParams; i++){
-			sprintf(ParamName, "%d", i);
-			m_Values->SetProp(ParamName, Stack->Pop());
+		if(NumParams==1 && Stack->GetTop()->IsInt())
+			m_Length = Stack->Pop()->GetInt(0);
+		else
+		{
+			m_Length = NumParams;
+			char ParamName[20];
+			for(int i=0; i<NumParams; i++){
+				sprintf(ParamName, "%d", i);
+				m_Values->SetProp(ParamName, Stack->Pop());
+			}
 		}
 	}
 }
