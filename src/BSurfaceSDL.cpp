@@ -417,6 +417,8 @@ HRESULT CBSurfaceSDL::DrawSprite(int X, int Y, RECT* Rect, float ZoomX, float Zo
 
 	if (AlphaDisable)
 		SDL_SetTextureBlendMode(m_Texture, SDL_BLENDMODE_NONE);
+	else if (BlendMode == 1) 
+		SDL_SetTextureBlendMode(m_Texture, SDL_BLENDMODE_ADD);
 	else
 		SDL_SetTextureBlendMode(m_Texture, SDL_BLENDMODE_BLEND);
 
