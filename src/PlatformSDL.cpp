@@ -56,6 +56,7 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 
 	bool windowedMode = false;
 	
+	int videoDevice = 0;
 
 	// parse command linex	
 	char* SaveGame = NULL;
@@ -89,6 +90,16 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 
 				delete [] IniDir;
 				delete [] IniName;
+			}
+		}
+		else if(CBPlatform::stricmp(param, "-videodevice")==0)
+		{
+			if (argc > i) strcpy(param, argv[i + 1]);
+			else param[0] = '\0';
+
+			if(strcmp(param, "") != 0)
+			{
+				videoDevice = std::atoi(param);
 			}
 		}
 		else if(CBPlatform::stricmp(param, "-windowed")==0) windowedMode = true;
@@ -138,7 +149,7 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 	HRESULT ret;
 
 	// initialize the renderer
-	ret = Game->m_Renderer->InitRenderer(Game->m_SettingsResWidth, Game->m_SettingsResHeight, windowedMode, upScalingStepping, downScalingStepping, pixelPerfectRendering);
+	ret = Game->m_Renderer->InitRenderer(Game->m_SettingsResWidth, Game->m_SettingsResHeight, windowedMode, upScalingStepping, downScalingStepping, pixelPerfectRendering,videoDevice);
 	if (FAILED(ret))
 	{
 		Game->LOG(ret, "Error initializing renderer. Exiting.");
