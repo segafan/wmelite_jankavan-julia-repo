@@ -53,18 +53,16 @@ CBRenderSDL::~CBRenderSDL()
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering)
+HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering, int device)
 {
+	
 
-	Game->LOG(0,"a");
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) 
 	{
 	    Game->LOG(0,SDL_GetError());
 	    return E_FAIL;
 	}
 	
-	Game->LOG(0,"b");
-
 	SDL_DisplayMode testResolution;
 	SDL_DisplayMode tmpResolution;
 	
@@ -73,7 +71,7 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 
 	const SDL_DisplayMode* current = NULL;
 	
-	SDL_GetCurrentDisplayMode(0,&tmpResolution);
+	SDL_GetCurrentDisplayMode(device,&tmpResolution);
 
 	float gameRatio = width / height;
 	float screenRatio = tmpResolution.w / tmpResolution.h;
@@ -86,9 +84,9 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	}
 	else
 	{
-		for (int i=0;i<SDL_GetNumDisplayModes(0); i++)
+		for (int i=0;i<SDL_GetNumDisplayModes(device); i++)
 		{
-			if (SDL_GetDisplayMode(0,i,&testResolution) == 0)
+			if (SDL_GetDisplayMode(device,i,&testResolution) == 0)
 			{
 				 float tmpRatio = testResolution.w / testResolution.h;
 				 if (tmpRatio == screenRatio)
@@ -107,7 +105,7 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 
 	if (current == NULL)
 	{
-			if (tmpResolution.w == 0) SDL_GetCurrentDisplayMode(0,&tmpResolution);			
+			if (tmpResolution.w == 0) SDL_GetCurrentDisplayMode(device,&tmpResolution);			
 			current = &tmpResolution;
 			m_RealWidth = current->w;
 			m_RealHeight = current->h;
@@ -448,12 +446,17 @@ HRESULT CBRenderSDL::DrawLine(int X1, int Y1, int X2, int Y2, DWORD Color)
 //////////////////////////////////////////////////////////////////////////
 void CBRenderSDL::TakeScreenshot()
 {
-
-
+/*
+#ifdef __LINUX64__	
+	SDL_Surface *surface = SDL_CreateRGBSurface(0,m_Width,m_Height,32,0x00ff0000, 0x0000ff00,0x000000ff,0xff000000);
+#else
 	SDL_Surface* surface = NULL;
 	surface = SDL_GetWindowSurface(m_Win);
 	if (!surface) return; // NULL;
+#endif	
+*/
 
+	SDL_Surface *surface = SDL_CreateRGBSurface(0,m_Width,m_Height,32,0x00ff0000, 0x0000ff00,0x000000ff,0xff000000);
 
 	if (SDL_RenderReadPixels(GetSdlRenderer(), &surface->clip_rect, surface->format->format, surface->pixels, surface->w * surface->format->BytesPerPixel) != 0) 
 	{
