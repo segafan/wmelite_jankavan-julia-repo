@@ -4081,7 +4081,7 @@ bool CBGame::HandleKeypress(SDL_Event* event)
 
 	if(IsVideoPlaying())
 	{
-		if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_ESCAPE) StopVideo();
+		// if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_ESCAPE) StopVideo();
 		return true;
 	}
 
@@ -4663,11 +4663,11 @@ HRESULT CBGame::OnActivate(bool Activate, bool RefreshMouse)
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::OnMouseLeftDown()
 {
-	if (IsVideoPlaying())
+/*	if (IsVideoPlaying())
 	{
 		StopVideo();
 		return S_OK;
-	}
+	}*/ 
 
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_CLICK, MOUSE_BUTTON_LEFT);
 
