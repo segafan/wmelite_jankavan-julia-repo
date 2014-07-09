@@ -1072,6 +1072,15 @@ HRESULT CAdGame::ScSetProperty(char *Name, CScValue *Value)
 		m_TalkSkipButton = (TTalkSkipButton)Val;
 		return S_OK;
 	}
+	else if(strcmp(Name, "VideoSkipButton")==0)
+	{
+		int Val = Value->GetInt();
+		if(Val<0) Val = 0;
+		if(Val>VIDEO_SKIP_NONE) Val = VIDEO_SKIP_NONE;
+		m_VideoSkipButton = (TVideoSkipButton)Val;
+		return S_OK;
+	}
+
 
 	//////////////////////////////////////////////////////////////////////////
 	// StartupScene
