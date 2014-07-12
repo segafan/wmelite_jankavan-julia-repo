@@ -37,6 +37,7 @@ CAdEntity::CAdEntity(CBGame* inGame):CAdTalkHolder(inGame)
 	m_Region = NULL;
 	m_Item = NULL;
 
+	m_TalkHidden = false;	
 	m_WalkToX = m_WalkToY = 0;
 	m_WalkToDir = DI_NONE;
 
@@ -574,33 +575,36 @@ HRESULT CAdEntity::Update()
 		//////////////////////////////////////////////////////////////////////////
 		case STATE_TALKING:
 		{
-			m_Sentence->Update();
-			if(m_Sentence->m_CurrentSprite) m_TempSprite2 = m_Sentence->m_CurrentSprite;
-
-			bool TimeIsUp = (m_Sentence->m_Sound && m_Sentence->m_SoundStarted && (!m_Sentence->m_Sound->IsPlaying()&&!m_Sentence->m_Sound->IsPaused())) || (!m_Sentence->m_Sound && m_Sentence->m_Duration <= Game->m_Timer - m_Sentence->m_StartTime);
-			if(m_TempSprite2==NULL || m_TempSprite2->m_Finished || (/*m_TempSprite2->m_Looping &&*/ TimeIsUp))
+			if (!m_TalkHidden)
 			{
-				if(TimeIsUp)
+				m_Sentence->Update();
+				if(m_Sentence->m_CurrentSprite) m_TempSprite2 = m_Sentence->m_CurrentSprite;
+
+				bool TimeIsUp = (m_Sentence->m_Sound && m_Sentence->m_SoundStarted && (!m_Sentence->m_Sound->IsPlaying()&&!m_Sentence->m_Sound->IsPaused())) || (!m_Sentence->m_Sound && m_Sentence->m_Duration <= Game->m_Timer - m_Sentence->m_StartTime);
+				if(m_TempSprite2==NULL || m_TempSprite2->m_Finished || (/*m_TempSprite2->m_Looping &&*/ TimeIsUp))
 				{
-					m_Sentence->Finish();
-					m_TempSprite2 = NULL;
-					m_State = STATE_READY;
+					if(TimeIsUp)
+					{
+						m_Sentence->Finish();
+						m_TempSprite2 = NULL;
+						m_State = STATE_READY;
+					}
+					else
+					{
+						m_TempSprite2 = GetTalkStance(m_Sentence->GetNextStance());
+						if(m_TempSprite2)
+						{
+							m_TempSprite2->Reset();
+							m_CurrentSprite = m_TempSprite2;						
+						}
+						((CAdGame*)Game)->AddSentence(m_Sentence);
+					}
 				}
 				else
 				{
-					m_TempSprite2 = GetTalkStance(m_Sentence->GetNextStance());
-					if(m_TempSprite2)
-					{
-						m_TempSprite2->Reset();
-						m_CurrentSprite = m_TempSprite2;						
-					}
+					m_CurrentSprite = m_TempSprite2;
 					((CAdGame*)Game)->AddSentence(m_Sentence);
 				}
-			}
-			else
-			{
-				m_CurrentSprite = m_TempSprite2;
-				((CAdGame*)Game)->AddSentence(m_Sentence);
 			}
 		}
 		break;
@@ -920,6 +924,12 @@ HRESULT CAdEntity::ScSetProperty(char *Name, CScValue *Value)
 		return S_OK;
 	}
 
+	else if(strcmp(Name, "TalkHidden")==0)
+	{
+		m_TalkHidden = Value->GetBool();
+		return S_OK;
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 	// WalkToY
 	//////////////////////////////////////////////////////////////////////////
@@ -1071,6 +1081,8 @@ HRESULT CAdEntity::Persist(CBPersistMgr *PersistMgr)
 	PersistMgr->Transfer(TMEMBER_INT(m_Subtype));
 	m_TalkSprites.Persist(PersistMgr);
 	m_TalkSpritesEx.Persist(PersistMgr);
+
+	PersistMgr->Transfer(TMEMBER(m_TalkHidden));
 
 	PersistMgr->Transfer(TMEMBER(m_WalkToX));
 	PersistMgr->Transfer(TMEMBER(m_WalkToY));

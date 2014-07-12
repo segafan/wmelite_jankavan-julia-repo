@@ -34,6 +34,7 @@ public:
 	CVidTheoraPlayer* m_Theora;
 #endif
 	HRESULT SetSprite(char* Filename);
+	bool m_TalkHidden;
 	int m_WalkToX;
 	int m_WalkToY;
 	TDirection m_WalkToDir;
