@@ -828,8 +828,13 @@ HRESULT CUIWindow::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 	//////////////////////////////////////////////////////////////////////////
 	else if(strcmp(Name, "GoSystemExclusive")==0)
 	{
-		Stack->CorrectParams(0);
+		Stack->CorrectParams(1);
+		char* Event = Stack->Pop()->GetString();
 		GoSystemExclusive();
+		if (Event != NULL)
+		{
+			ApplyEvent(Event);
+		}
 		Script->WaitFor(this);
 		Stack->PushNULL();
 		return S_OK;
