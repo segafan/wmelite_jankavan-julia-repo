@@ -168,7 +168,7 @@ HRESULT CBScriptHolder::ScCallMethod(CScScript* Script, CScStack *Stack, CScStac
 	{
 		Stack->CorrectParams(1);
 		Stack->PushBool(SUCCEEDED(AddScript(Stack->Pop()->GetString())));
-
+		
 		return S_OK;
 	}
 
