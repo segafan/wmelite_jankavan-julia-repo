@@ -46,6 +46,7 @@ CVidTheoraPlayer::~CVidTheoraPlayer()
 	SAFE_DELETE_ARRAY(m_Filename);
 	SAFE_DELETE_ARRAY(m_AlphaFilename);
 	SAFE_DELETE(m_Texture);
+	SAFE_DELETE(m_Subtitler);
 	SAFE_DELETE(m_AlphaTexture);
 }
 
@@ -65,6 +66,8 @@ void CVidTheoraPlayer::SetDefaults()
 	m_Texture = NULL;
 	m_AlphaTexture = NULL;
 	m_AlphaFilename = NULL;
+
+	m_Subtitler = NULL;
 
 	m_SavedState = THEORA_STATE_NONE;
 	m_SavedPos = 0;
@@ -114,7 +117,10 @@ HRESULT CVidTheoraPlayer::Initialize(char* filename, char* subtitleFile)
 	}
 
 	Game->m_VideoMgr->RegisterPlayer(this);
-
+	
+	if(!m_Subtitler) m_Subtitler = new CVidSubtitler(Game);
+	if(m_Subtitler && Game->m_VideoSubtitles) m_Subtitler->LoadSubtitles(filename, subtitleFile);
+	
 	return S_OK;
 }
 
@@ -148,7 +154,11 @@ HRESULT CVidTheoraPlayer::Update()
 		// transfer the frame pixels to your display device, texure, graphical context or whatever you use.
 		m_Texture->FillTexture(frame->getBuffer(), frame->getStride() * 4, m_AlphaTexture);
 		m_Clip->popFrame();
+		if(m_Subtitler && m_Subtitler->m_Loaded && Game->m_VideoSubtitles) m_Subtitler->Update(frame->getFrameNumber());
+
 	} 
+
+
 	return S_OK;
 }
 
@@ -237,6 +247,8 @@ HRESULT CVidTheoraPlayer::Display(DWORD alpha)
 		else Res = m_Texture->DisplayTransZoom(m_PosX, m_PosY, rc, m_PlayZoom, m_PlayZoom, alpha);
 	}
 	else Res = E_FAIL;
+
+	if(m_Subtitler && Game->m_VideoSubtitles) m_Subtitler->Display();
 
 	return Res;
 }
