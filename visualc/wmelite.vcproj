@@ -2621,6 +2621,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\VidSubtitle.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\VidSubtitler.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\VidTheoraPlayer.cpp"
 				>
 			</File>
@@ -3116,6 +3124,14 @@
 			</File>
 			<File
 				RelativePath="..\src\VidManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\VidSubtitle.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\VidSubtitler.h"
 				>
 			</File>
 			<File

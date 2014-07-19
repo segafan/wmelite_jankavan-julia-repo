@@ -27,6 +27,7 @@ THE SOFTWARE.
 #define __WmeVidTheoraPlayer_H__
 
 #include "BBase.h"
+#include "VidSubtitler.h"
 
 class CBSurfaceSDL;
 class TheoraVideoClip;
@@ -94,6 +95,8 @@ private:
 	DWORD m_SavedPos;
 
 	TheoraVideoClip* m_Clip;
+
+	CVidSubtitler* m_Subtitler;
 };
 
 #endif // __WmeVidTheoraPlayer_H__
