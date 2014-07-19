@@ -1371,6 +1371,12 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		Stack->PushInt(Length);
 		return S_OK;
 	}
+	else if(strcmp(Name, "IsMusicCrossfading")==0)
+	{
+		Stack->CorrectParams(0);
+		Stack->PushBool(m_MusicCrossfadeRunning);
+		return S_OK;
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	// SetMousePos
