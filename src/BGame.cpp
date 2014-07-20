@@ -473,7 +473,11 @@ HRESULT CBGame::Initialize3() // renderer is initialized
 
 	return S_OK;
 }
-
+void CBGame::DEBUG_JustLogEnable(const char* Filename)
+{
+    this->DEBUG_DebugEnable(Filename);
+    m_DEBUG_DebugMode = false;
+}
 
 //////////////////////////////////////////////////////////////////////
 void CBGame::DEBUG_DebugEnable(const char* Filename)
@@ -528,9 +532,10 @@ void CBGame::DEBUG_DebugDisable()
 //////////////////////////////////////////////////////////////////////
 void CBGame::LOG(HRESULT res, LPCSTR fmt, ...)
 {
-#if !defined(__IPHONEOS__) && !defined(__ANDROID__)
+    
+    
 	if(!m_DEBUG_DebugMode) return;
-#endif
+
 	time_t timeNow;
 	time(&timeNow);
 	struct tm* tm = localtime(&timeNow);

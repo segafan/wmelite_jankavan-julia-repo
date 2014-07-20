@@ -163,6 +163,8 @@ public:
 	virtual ~CBGame();
 	void DEBUG_DebugDisable();
 	void DEBUG_DebugEnable(const char* Filename=NULL);
+    void DEBUG_JustLogEnable(const char* Filename=NULL);
+    
 	bool m_DEBUG_DebugMode;
 	bool m_DEBUG_AbsolutePathWarning;
 	FILE* m_DEBUG_LogFile;
