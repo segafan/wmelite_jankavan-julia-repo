@@ -61,6 +61,9 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 	// parse command linex	
 	char* SaveGame = NULL;
 	char param[MAX_PATH];
+    
+    Game->DEBUG_JustLogEnable("./wme.log");
+    
 	for(int i = 0; i < argc; i++)
 	{
 		strcpy(param, argv[i]);
@@ -106,15 +109,15 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 	}
 
 
-	if(Game->m_Registry->ReadBool("Debug", "DebugMode")) Game->DEBUG_DebugEnable("./wme.log");
+	// if(Game->m_Registry->ReadBool("Debug", "DebugMode")) Game->DEBUG_DebugEnable("./wme.log");
 
-	Game->m_DEBUG_ShowFPS = Game->m_Registry->ReadBool("Debug", "ShowFPS");
+	// Game->m_DEBUG_ShowFPS = Game->m_Registry->ReadBool("Debug", "ShowFPS");
 
-	if(Game->m_Registry->ReadBool("Debug", "DisableSmartCache"))
-	{
-		Game->LOG(0, "Smart cache is DISABLED");
-		Game->m_SmartCache = false;
-	}
+//	if(Game->m_Registry->ReadBool("Debug", "DisableSmartCache"))
+//	{
+//		Game->LOG(0, "Smart cache is DISABLED");
+//		Game->m_SmartCache = false;
+//	}
 
 	//bool AllowDirectDraw = Game->m_Registry->ReadBool("Debug", "AllowDirectDraw", false);
 
