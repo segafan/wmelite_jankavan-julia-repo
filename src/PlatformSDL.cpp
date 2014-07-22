@@ -138,8 +138,8 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 
 	Game->Initialize2();
 
-	Game->GetDebugMgr()->OnGameInit();
-	Game->m_ScEngine->LoadBreakpoints();
+//	Game->GetDebugMgr()->OnGameInit();
+//	Game->m_ScEngine->LoadBreakpoints();
 
 	// read values for up- and downscale stepping from registry
 	float upScalingStepping = (float) (((float) Game->m_Registry->ReadInt("Scaling", "UpScalingStepping", 0)) / 100.0);
