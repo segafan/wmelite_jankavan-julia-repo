@@ -513,6 +513,7 @@ HRESULT CBRenderSDL::SwitchFullscreen()
 	return S_OK;
 }
 
+
 //////////////////////////////////////////////////////////////////////////
 const char* CBRenderSDL::GetName()
 {

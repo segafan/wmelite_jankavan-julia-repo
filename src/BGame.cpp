@@ -534,7 +534,7 @@ void CBGame::LOG(HRESULT res, LPCSTR fmt, ...)
 {
     
     
-	if(!m_DEBUG_DebugMode) return;
+//	if(!m_DEBUG_DebugMode) return;
 
 	time_t timeNow;
 	time(&timeNow);
@@ -1833,6 +1833,13 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	//////////////////////////////////////////////////////////////////////////
 	// Screenshot
 	//////////////////////////////////////////////////////////////////////////
+	else if(strcmp(Name, "ToggleFullscreen")==0)
+	{
+		Stack->CorrectParams(0);
+		m_Renderer->SwitchFullscreen();
+		Stack->PushBool(true);
+		return S_OK;
+	}
 	else if(strcmp(Name, "PrepareScreenshot")==0)
 	{
 		Stack->CorrectParams(0);
@@ -2352,6 +2359,12 @@ CScValue* CBGame::ScGetProperty(char *Name)
 	else if(strcmp(Name, "MouseY")==0)
 	{
 		m_ScValue->SetInt(m_MousePos.y);
+		return m_ScValue;
+	}
+
+	else if(strcmp(Name,"Windowed") == 0)
+	{
+		m_ScValue->SetBool(m_Renderer->m_Windowed);
 		return m_ScValue;
 	}
 
