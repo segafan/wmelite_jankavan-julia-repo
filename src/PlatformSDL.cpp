@@ -60,9 +60,10 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 
 	// parse command linex	
 	char* SaveGame = NULL;
-	char param[MAX_PATH];
     
-    Game->DEBUG_JustLogEnable("./wme.log");
+	char param[MAX_PATH];
+	
+	bool enableDebug = false;
     
 	for(int i = 0; i < argc; i++)
 	{
@@ -72,6 +73,7 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 		if(CBPlatform::stricmp(param, "-detect")==0)
 		{
 			windowedMode = true;
+			enableDebug = true;
 			Game->DEBUG_DebugEnable("./wme.log");
 		}
 		else if(CBPlatform::stricmp(param, "-project")==0)
@@ -107,6 +109,9 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 		}
 		else if(CBPlatform::stricmp(param, "-windowed")==0) windowedMode = true;
 	}
+
+	if (!enableDebug)
+		Game->DEBUG_JustLogEnable("./wme.log");
 
 
 	// if(Game->m_Registry->ReadBool("Debug", "DebugMode")) Game->DEBUG_DebugEnable("./wme.log");
