@@ -295,6 +295,8 @@ HRESULT CBFileManager::InitPaths()
 	pathList = Game->m_Registry->ReadString("Resource", "CustomPaths", "");
 	numPaths = CBUtils::StrNumEntries(pathList.c_str(), ';');
 
+//	Game->LOG(0, pathList.c_str());
+
 	for(int i = 0; i < numPaths; i++)
 	{
 		char* path = CBUtils::StrEntry(i, pathList.c_str(), ';');

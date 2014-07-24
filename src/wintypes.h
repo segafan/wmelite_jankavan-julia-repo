@@ -44,7 +44,7 @@ THE SOFTWARE.
 #define CONST const
 
 
-#define MAX_PATH 512
+#define MAX_PATH 10000
 
 typedef char CHAR;
 typedef short SHORT;
