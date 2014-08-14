@@ -69,7 +69,10 @@ HRESULT CBFrame::Draw(int X, int Y, CBObject* Register, float ZoomX, float ZoomY
 	for(int i=0; i<m_Subframes.GetSize(); i++)
 	{
 		res = m_Subframes[i]->Draw(X, Y, Register, ZoomX, ZoomY, Precise, Alpha, Rotate, BlendMode);
-		if(FAILED(res)) return res;
+		if(FAILED(res)) 
+		{
+			return res;
+		}
 	}
 	return S_OK;
 }

@@ -92,8 +92,10 @@ void CBSprite::Cleanup()
 HRESULT CBSprite::Draw(int X, int Y, CBObject* Register, float ZoomX, float ZoomY, DWORD Alpha)
 {
 	GetCurrentFrame(ZoomX, ZoomY);
-	if(m_CurrentFrame<0 || m_CurrentFrame>=m_Frames.GetSize()) return S_OK;
-
+	if(m_CurrentFrame<0 || m_CurrentFrame>=m_Frames.GetSize()) 
+	{
+		return S_OK;
+	}
 	// move owner if allowed to
 	if(m_Changed && m_Owner && m_Owner->m_Movable)
 	{
