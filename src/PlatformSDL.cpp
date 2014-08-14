@@ -61,10 +61,11 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 	// parse command linex	
 	char* SaveGame = NULL;
     
-	char param[MAX_PATH];
+	char param[512];
 	
 	bool enableDebug = false;
-    
+	bool showFps = false;
+
 	for(int i = 0; i < argc; i++)
 	{
 		strcpy(param, argv[i]);
@@ -74,7 +75,7 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 		{
 			windowedMode = true;
 			enableDebug = true;
-			Game->DEBUG_DebugEnable("./wme.log");
+			showFps = true;
 		}
 		else if(CBPlatform::stricmp(param, "-project")==0)
 		{
@@ -85,9 +86,9 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 			{
 				char* IniDir = CBUtils::GetPath(param);
 				char* IniName = CBUtils::GetFilename(param);
-
-				// switch to ini's dir
+			
 				chdir(IniDir);
+
 
 				// set ini name
 				sprintf(param, "./%s", IniName);
@@ -110,13 +111,17 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 		else if(CBPlatform::stricmp(param, "-windowed")==0) windowedMode = true;
 	}
 
+	videoDevice = 0;
+
 	if (!enableDebug)
 		Game->DEBUG_JustLogEnable("./wme.log");
+	else
+		Game->DEBUG_DebugEnable("./wme.log");
 
 
 	// if(Game->m_Registry->ReadBool("Debug", "DebugMode")) Game->DEBUG_DebugEnable("./wme.log");
 
-	// Game->m_DEBUG_ShowFPS = Game->m_Registry->ReadBool("Debug", "ShowFPS");
+//	Game->m_DEBUG_ShowFPS = Game->m_Registry->ReadBool("Debug", "ShowFPS");
 
 //	if(Game->m_Registry->ReadBool("Debug", "DisableSmartCache"))
 //	{
@@ -166,7 +171,8 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 	}
 
 	Game->Initialize3();	
-	
+	Game->m_DEBUG_ShowFPS = showFps;
+
 #if defined(__IPHONEOS__) || defined(__ANDROID__)
 	SDL_AddEventWatch(CBPlatform::SDLEventWatcher, NULL);
 #endif
@@ -227,8 +233,10 @@ int CBPlatform::MessageLoop()
 			Game->DisplayQuickMsg();
 
 			Game->DisplayDebugInfo();
+			Game->m_Renderer->SendRenderingHintSceneComplete();
 
 			// ***** flip
+			
 			if(!Game->m_SuspendedRendering) Game->m_Renderer->Flip();
 			if(Game->m_Loading) Game->LoadGame(Game->m_ScheduledLoadSlot);
 		}

@@ -100,7 +100,6 @@ HRESULT CUIWindow::Display(int OffsetX, int OffsetY)
 			m_ShieldWindow->m_PosX = m_ShieldWindow->m_PosY = 0;
 			m_ShieldWindow->m_Width = Game->m_Renderer->m_Width;
 			m_ShieldWindow->m_Height = Game->m_Renderer->m_Height;
-
 			m_ShieldWindow->Display();
 		}
 	}
@@ -158,6 +157,7 @@ HRESULT CUIWindow::Display(int OffsetX, int OffsetY)
 	CBSprite* image = m_Image;
 	CBFont* font = m_Font;
 
+
 	if(!IsFocused())
 	{
 		if(m_BackInactive) back = m_BackInactive;
@@ -166,9 +166,14 @@ HRESULT CUIWindow::Display(int OffsetX, int OffsetY)
 	}
 
 	if(m_AlphaColor!=0) Game->m_Renderer->m_ForceAlphaColor = m_AlphaColor;
-	if(back) back->Display(m_PosX + OffsetX, m_PosY + OffsetY, m_Width, m_Height);
-	if(image) image->Draw(m_PosX + OffsetX, m_PosY + OffsetY, m_Transparent?NULL:this);
-
+	if(back) 
+	{
+		back->Display(m_PosX + OffsetX, m_PosY + OffsetY, m_Width, m_Height);
+	}
+	if(image) 
+	{
+		image->Draw(m_PosX + OffsetX, m_PosY + OffsetY, m_Transparent?NULL:this);
+	}
 	if(!CBPlatform::IsRectEmpty(&m_TitleRect) && font && m_Text)
 	{
 		font->DrawText((BYTE*)m_Text, m_PosX+OffsetX+m_TitleRect.left, m_PosY+OffsetY+m_TitleRect.top, m_TitleRect.right-m_TitleRect.left, m_TitleAlign, m_TitleRect.bottom-m_TitleRect.top);
@@ -183,8 +188,10 @@ HRESULT CUIWindow::Display(int OffsetX, int OffsetY)
 
 	if(m_AlphaColor!=0) Game->m_Renderer->m_ForceAlphaColor = 0;
 
-	if(PopViewport) Game->PopViewport();
-
+	if(PopViewport) 
+	{
+		Game->PopViewport();
+	}
 	return S_OK;
 }
 
@@ -831,6 +838,7 @@ HRESULT CUIWindow::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 		Stack->CorrectParams(1);
 		char* Event = Stack->Pop()->GetString();
 		GoSystemExclusive();
+	
 		if (Event != NULL)
 		{
 			ApplyEvent(Event);

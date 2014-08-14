@@ -1834,7 +1834,7 @@ HRESULT CAdGame::DisplayContent(bool Update, bool DisplayAll)
 		m_Scene->Update();		
 		m_Scene->Display();
 
-		Game->m_Renderer->SendRenderingHintSceneComplete();
+//		Game->m_Renderer->SendRenderingHintSceneComplete();
 
 
 		// display in-game windows
@@ -1859,6 +1859,8 @@ HRESULT CAdGame::DisplayContent(bool Update, bool DisplayAll)
 			if(m_Fader) m_Fader->Display();				
 			m_TransMgr->Update();
 		}
+
+				//Game->m_Renderer->SendRenderingHintSceneComplete();
 	}
 
 

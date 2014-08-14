@@ -567,6 +567,7 @@ void CBGame::LOG(HRESULT res, LPCSTR fmt, ...)
 	if(m_DebugMgr) m_DebugMgr->OnLog(res, buff);
 
 	fprintf(m_DEBUG_LogFile, "%02d:%02d: %s\n", tm->tm_hour, tm->tm_min, buff);
+
 	fflush(m_DEBUG_LogFile);
 #endif
 
@@ -3683,9 +3684,14 @@ HRESULT CBGame::DisplayWindows(bool InGame)
 	for(i=0; i<m_Windows.GetSize(); i++)
 	{
 		if(m_Windows[i]->m_Visible && m_Windows[i]->m_InGame==InGame){
-
+				
+			
 			res = m_Windows[i]->Display();
-			if(FAILED(res)) return res;
+			if(FAILED(res)) 
+			{
+				// Game->LOG(0,m_Windows[i]->m_Filename);
+				return res;
+			}
 		}
 	}
 
@@ -4855,8 +4861,14 @@ HRESULT CBGame::OnPaint()
 		m_Renderer->InitLoop();
 		DisplayContent(false, true);
 		DisplayDebugInfo();
+		
+		m_Renderer->SendRenderingHintSceneComplete();
 		m_Renderer->WindowedBlt();
+		
 	}
+
+
+
 	return S_OK;
 }
 
@@ -4879,7 +4891,7 @@ HRESULT CBGame::DisplayDebugInfo()
 	if(m_DEBUG_ShowFPS)
 	{
 		sprintf(str, "FPS: %d", Game->m_Fps);
-		m_SystemFont->DrawText((BYTE*)str, 0, 0, 100, TAL_LEFT);
+		m_SystemFont->DrawText((BYTE*)str, 0, 70, m_Renderer->m_Width, TAL_LEFT);
 	}
 
 	if(Game->m_DEBUG_DebugMode)
@@ -4911,6 +4923,7 @@ HRESULT CBGame::DisplayDebugInfo()
 		m_SystemFont->DrawText((BYTE*)str, 0, 170, m_Renderer->m_Width, TAL_RIGHT);
 
 	}
+	
 
 	return S_OK;
 }

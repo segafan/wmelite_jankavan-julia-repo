@@ -126,6 +126,7 @@ HRESULT CBFileManager::Cleanup()
 //////////////////////////////////////////////////////////////////////
 BYTE* CBFileManager::ReadWholeFile(const char* Filename, DWORD* Size, bool MustExist)
 {
+	// Game->LOG(0, "File '%s' ", Filename);
 
 	BYTE* buffer=NULL;
 	
@@ -148,7 +149,8 @@ BYTE* CBFileManager::ReadWholeFile(const char* Filename, DWORD* Size, bool MustE
 	buffer = new BYTE[File->GetSize()+1];
 	if(buffer == NULL)
 	{
-		Game->LOG(0, "Error allocating buffer for file '%s' (%d bytes)", Filename, File->GetSize()+1);
+		Game->LOG(0, "Error allocating buffer");
+		// Game->LOG(0, "Error allocating buffer for file '%s' (%d bytes)", Filename, File->GetSize()+1);
 		CloseFile(File);
 		return NULL;
 	}
@@ -257,6 +259,8 @@ HRESULT CBFileManager::AddPath(TPathType Type, const char *Path)
 	char *buffer = new char [strlen(cpath) + 1];
 	strcpy(buffer, cpath);
 
+//	Game->LOG(0,"Cpath: %s", cpath);
+
 	switch(Type)
 	{
 		case PATH_SINGLE: m_SinglePaths.Add(buffer); break;
@@ -286,6 +290,7 @@ HRESULT CBFileManager::ReloadPaths()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBFileManager::InitPaths()
 {
+//	Game->LOG(0,"PathInits");
 	RestoreCurrentDir();
 
 	AnsiString pathList;
@@ -293,6 +298,7 @@ HRESULT CBFileManager::InitPaths()
 
 	// single files paths	
 	pathList = Game->m_Registry->ReadString("Resource", "CustomPaths", "");
+
 	numPaths = CBUtils::StrNumEntries(pathList.c_str(), ';');
 
 //	Game->LOG(0, pathList.c_str());

@@ -275,7 +275,6 @@ HRESULT CBRenderSDL::SendRenderingHintSceneComplete()
 
 	m_RenderOffscreen = false;
 
-	
 
 	return S_OK;
 }
@@ -333,10 +332,15 @@ HRESULT CBRenderSDL::Flip()
     
 #endif
 
+
+
+
 	// if not already done, draw the offscreen image onto the final screen
 	if ((m_PixelPerfect == true) && (m_RenderOffscreen == true)) {
 		SendRenderingHintSceneComplete();
 	}
+
+
 
 	SDL_RenderPresent(m_Renderer);
 
@@ -458,7 +462,8 @@ void CBRenderSDL::TakeScreenshot()
 
 	SDL_Surface *surface = SDL_CreateRGBSurface(0,m_Width,m_Height,32,0x00ff0000, 0x0000ff00,0x000000ff,0xff000000);
 
-	if (SDL_RenderReadPixels(GetSdlRenderer(), &surface->clip_rect, surface->format->format, surface->pixels, surface->w * surface->format->BytesPerPixel) != 0) 
+	//GetSdlRenderer()
+	if (SDL_RenderReadPixels(m_Renderer, &surface->clip_rect, surface->format->format, surface->pixels, surface->w * surface->format->BytesPerPixel) != 0) 
 	{
 		SDL_GetError();
 		return;// NULL;
