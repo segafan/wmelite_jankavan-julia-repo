@@ -9,6 +9,23 @@
 
 IMPLEMENT_PERSISTENT(SteamSupport, false);
 
+SteamSupport::SteamSupport(CBGame* inGame, CScStack* Stack):CBScriptable(inGame)
+{
+	Stack->CorrectParams(0);
+
+	m_AppId = 0;
+	m_Length = 0;
+	m_Values = new CScValue(Game);
+
+	bool result = SteamAPI_Init();
+	m_LoggedIn = result;
+	if (m_LoggedIn)
+	{
+		m_AppId = SteamUtils()->GetAppID();
+	}
+
+}
+
 
 SteamSupport::SteamSupport(CBGame* inGame):CBScriptable(inGame)
 {

@@ -3229,7 +3229,7 @@ HRESULT CBGame::ExternalCall(CScScript* Script, CScStack* Stack, CScStack* ThisS
 	{
 		this_obj = ThisStack->GetTop();
 
-		this_obj->SetNative(new SteamSupport(Game));
+		this_obj->SetNative(new SteamSupport(Game,Stack));
 		Stack->PushNULL();
 	}
 	//////////////////////////////////////////////////////////////////////////
