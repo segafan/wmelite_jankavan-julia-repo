@@ -73,10 +73,10 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	
 	SDL_GetCurrentDisplayMode(device,&tmpResolution);
 
-	float gameRatio = width / height;
-	float screenRatio = tmpResolution.w / tmpResolution.h;
+	float gameRatio = (float)width / (float)height;
+	float screenRatio = (float)tmpResolution.w / (float)tmpResolution.h;
 	
-	if (gameRatio == screenRatio)
+	if (gameRatio == screenRatio && tmpResolution.w == width && tmpResolution.h == height)
 	{
 		current = &tmpResolution;
 		m_RealWidth = width;
@@ -88,8 +88,8 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 		{
 			if (SDL_GetDisplayMode(device,i,&testResolution) == 0)
 			{
-				 float tmpRatio = testResolution.w / testResolution.h;
-				 if (tmpRatio == screenRatio)
+				 float tmpRatio = (float)testResolution.w / (float)testResolution.h;
+				 if (tmpRatio == screenRatio && testResolution.format == tmpResolution.format)
 				 {
 					 if (testResolution.w >= width && testResolution.h >= height &&
 						 testResolution.w <= tmpResolution.w && testResolution.h <= tmpResolution.h)
@@ -176,8 +176,8 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	m_BorderLeft = (m_RealWidth - (m_Width * ratio)) / 2;
 	m_BorderRight = m_RealWidth - (m_Width * ratio) - m_BorderLeft;
 
-	m_BorderTop = (m_RealHeight - (m_Height * ratio)) / 2;
-	m_BorderBottom = m_RealHeight - (m_Height * ratio) - m_BorderTop;
+	m_BorderTop = (int)(((float)m_RealHeight - ((float)m_Height * (float)ratio)) / 2);
+	m_BorderBottom = (int)((float)m_RealHeight - ((float)m_Height * (float)ratio) - (float)m_BorderTop);
 
 
 
@@ -204,6 +204,10 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
     // as of Novmber 2012 using SDL_WINDOW_FULLSCREEN causes iOS glitch when returning back to the app (the image is shifted several pixels up)
 	if (!windowed) flags |= SDL_WINDOW_FULLSCREEN;
 #endif
+
+	Game->LOG(0,"Selected resolution: %d : %d",m_RealWidth,m_RealHeight);
+	Game->LOG(0,"Generated borders: (TBLR) %d,%d,%d,%d", m_BorderTop, m_BorderBottom,m_BorderLeft, m_BorderRight);
+
 	m_Win = SDL_CreateWindow("WME Lite",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
@@ -213,9 +217,15 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	if (!m_Win) return E_FAIL;
 
 	SDL_SetWindowDisplayMode(m_Win, current);	
+	
 	SDL_ShowCursor(SDL_DISABLE);
 
 	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+
+	SDL_GetCurrentDisplayMode(device,&tmpResolution);
+	Game->LOG(0,"Real resolution: %d : %d",tmpResolution.w,tmpResolution.h);
+
+
 
 #ifdef __IPHONEOS__
 	// SDL defaults to OGL ES2, which doesn't work on old devices

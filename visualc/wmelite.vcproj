@@ -159,7 +159,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="res\manifest.xml"
+				AdditionalManifestFiles="res\manifest.xml;res\dpiaware.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
