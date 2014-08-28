@@ -37,6 +37,7 @@ THE SOFTWARE.
 #include <time.h>
 #include "crc.h"
 #include "StringUtil.h"
+#include "SteamSupport.h"
 
 #ifdef __IPHONEOS__
 #	include "ios_utils.h"
@@ -3118,6 +3119,7 @@ void CBGame::PublishNatives()
 	m_ScEngine->ExtDefineFunction("File");
 	m_ScEngine->ExtDefineFunction("Date");
 	m_ScEngine->ExtDefineFunction("Array");
+	m_ScEngine->ExtDefineFunction("Steam");
 	m_ScEngine->ExtDefineFunction("TcpClient");
 	m_ScEngine->ExtDefineFunction("Object");
 	//m_ScEngine->ExtDefineFunction("Game");
@@ -3220,7 +3222,16 @@ HRESULT CBGame::ExternalCall(CScScript* Script, CScStack* Stack, CScStack* ThisS
 		this_obj->SetNative(new CSXArray(Game, Stack));
 		Stack->PushNULL();
 	}
+	////////////////////////////////////////////////////////////////////////////
+	// STEAM
+	///////////////////////////////////////////////////////////////////////////
+	else if (strcmp(Name, "Steam")==0)
+	{
+		this_obj = ThisStack->GetTop();
 
+		this_obj->SetNative(new SteamSupport(Game));
+		Stack->PushNULL();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	// Object
 	//////////////////////////////////////////////////////////////////////////

@@ -230,6 +230,7 @@ typedef void (*SYS_INSTANCE_CALLBACK)(void* Instance, void* Data);
 #include "AdGame.h"
 #include "UIEntity.h"
 
+#include "SteamSupport.h"
 
 // big boss
 #include "BGame.h"
