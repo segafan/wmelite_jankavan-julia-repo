@@ -12,6 +12,7 @@ public:
 	DECLARE_PERSISTENT(SteamSupport, CBScriptable)
 
 	SteamSupport(CBGame* inGame);
+	SteamSupport(CBGame* inGame, CScStack* Stack);
 	virtual ~SteamSupport(void);
 
 	HRESULT ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisStack, char *Name);
