@@ -597,7 +597,8 @@ HRESULT CScScript::ExecuteInstruction()
 				*/
 				else{
 					res = E_FAIL;
-					if(var->m_Type==VAL_NATIVE && !TriedNative) res = var->m_ValNative->ScCallMethod(this, m_Stack, m_ThisStack, MethodName);
+					if(var->m_Type==VAL_NATIVE && !TriedNative) 
+						res = var->m_ValNative->ScCallMethod(this, m_Stack, m_ThisStack, MethodName);
 
 					if(FAILED(res)){
 						m_Stack->CorrectParams(0);
