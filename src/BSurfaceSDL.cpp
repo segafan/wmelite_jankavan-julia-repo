@@ -420,7 +420,7 @@ HRESULT CBSurfaceSDL::DrawSprite(int X, int Y, RECT* Rect, float ZoomX, float Zo
 	else if (BlendMode == 1) 
 		SDL_SetTextureBlendMode(m_Texture, SDL_BLENDMODE_ADD);
 	else
-		SDL_SetTextureBlendMode(m_Texture, SDL_BLENDMODE_BLEND);
+		 SDL_SetTextureBlendMode(m_Texture, SDL_BLENDMODE_BLEND);
 
 	SDL_Rect srcRect;
 	srcRect.x = Rect->left;

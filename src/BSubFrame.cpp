@@ -209,6 +209,7 @@ HRESULT CBSubFrame::Draw(int X, int Y, CBObject* Register, float ZoomX, float Zo
 
 	if(Register!=NULL && !m_Decoration)
 	{
+
 		if(ZoomX==100 && ZoomY==100)
 		{
 			Game->m_Renderer->m_RectList.Add(new CBActiveRect(Game, Register, this, X-m_HotspotX+m_Rect.left, Y-m_HotspotY+m_Rect.top, m_Rect.right - m_Rect.left, m_Rect.bottom-m_Rect.top, ZoomX, ZoomY, Precise));

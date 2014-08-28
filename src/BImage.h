@@ -42,6 +42,7 @@ public:
 	HRESULT SaveBMPFile(char* Filename);
 	HRESULT CopyFrom(CBImage* OrigImage, int NewWidth = 0, int NewHeight = 0);
 
+
 	FIBITMAP* GetBitmap() const { return m_Bitmap; }
 private:
 	FIBITMAP* m_Bitmap;
