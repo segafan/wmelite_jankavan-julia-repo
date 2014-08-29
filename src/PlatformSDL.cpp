@@ -53,6 +53,7 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 	Game = inGame;
 	if(!Game) return 1;
 
+	Game->m_OmitPackageMask = "";
 
 	bool windowedMode = false;
 	
@@ -98,6 +99,17 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 				delete [] IniName;
 			}
 		}
+		else if(CBPlatform::stricmp(param, "-ignore")==0)
+		{
+			if (argc > i) strcpy(param, argv[i + 1]);
+			else param[0] = '\0';
+
+			if(strcmp(param, "") != 0)
+			{
+				Game->m_OmitPackageMask = param;
+			}
+		}
+
 		else if(CBPlatform::stricmp(param, "-videodevice")==0)
 		{
 			if (argc > i) strcpy(param, argv[i + 1]);

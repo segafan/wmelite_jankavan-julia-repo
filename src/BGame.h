@@ -66,6 +66,8 @@ public:
 	bool m_MiniUpdateEnabled;
 	virtual HRESULT MiniUpdate();
 
+	char* m_OmitPackageMask;
+
 	void GetMousePos(POINT* Pos);
 	RECT m_MouseLockRect;
 
