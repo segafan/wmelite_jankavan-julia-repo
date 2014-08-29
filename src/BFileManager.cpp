@@ -496,6 +496,19 @@ if(hdr.Magic1 != PACKAGE_MAGIC_1 || hdr.Magic2 != PACKAGE_MAGIC_2 || hdr.Package
 		pkg->m_Name = new char[fileNameWithoutExt.length() + 1];
 		pkg->m_Name[fileNameWithoutExt.length()] = 0;
 		strncpy((char *) (pkg->m_Name), fileNameWithoutExt.c_str(), fileNameWithoutExt.length());
+		
+
+		if (Game->m_OmitPackageMask != "")
+		{
+			if (fileNameWithoutExt.find(Game->m_OmitPackageMask) != string::npos)
+			{
+				Game->LOG(0, "Ignoring package internal name=%s", pkg->m_InternalName);
+				Game->LOG(0, "Ignoring package file name=%s", pkg->m_Name);
+				ops->file_close(f);
+
+				return S_OK;
+			}
+		}
 
 		Game->LOG(0, "Package internal name=%s", pkg->m_InternalName);
 		Game->LOG(0, "Package file name=%s", pkg->m_Name);
