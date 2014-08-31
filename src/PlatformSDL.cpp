@@ -53,7 +53,7 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 	Game = inGame;
 	if(!Game) return 1;
 
-	Game->m_OmitPackageMask = "";
+	
 
 	bool windowedMode = false;
 	
