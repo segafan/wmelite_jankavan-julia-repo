@@ -109,6 +109,8 @@ CBGame::CBGame():CBObject(this)
 	m_TimerDelta = 0;
 	m_TimerLast = 0;
 
+	m_OmitPackageMask = "";
+
 	m_LiveTimer = 0;
 	m_LiveTimerDelta = 0;
 	m_LiveTimerLast = 0;
