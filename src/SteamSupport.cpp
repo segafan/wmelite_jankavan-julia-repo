@@ -52,8 +52,20 @@ SteamSupport::~SteamSupport(void)
 
 bool SteamSupport::SetAchievement(const char* id)
 {
+	if (!m_LoggedIn) return false;
+
 	// if (m_StatsInitialized) return false;
+	// Game->LOG(0,id);
+	if (!SteamUser())
+	{
+//		Game->LOG(0,"We don't have a steam user.");
+		return false;
+	}
+	
 	if (!SteamUserStats()->SetAchievement(id)) return false;
+
+//	Game->LOG(0,"And we even set that");
+	
 	return SteamUserStats()->StoreStats();
 }
 
@@ -82,7 +94,18 @@ CScValue* SteamSupport::ScGetProperty(char *Name)
 		m_ScValue->SetString("steam");
 		return m_ScValue;
 	}
-	
+
+	if(strcmp(Name, "AppId")==0){
+		m_ScValue->SetInt(m_AppId);
+		return m_ScValue;
+	}
+
+	if(strcmp(Name, "IsLogged")==0){
+		m_ScValue->SetBool(m_LoggedIn);
+		return m_ScValue;
+	}
+
+
 	return m_ScValue;
 }
 

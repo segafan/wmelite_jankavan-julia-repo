@@ -1,7 +1,7 @@
 #ifndef __WmeSteamSupport_H__
 #define __WmeSteamSupport_H__
 
-// #include "steam_api.h"
+#include "steam_api.h"
 #include "BScriptable.h"
 
 
@@ -26,6 +26,9 @@ public:
 	int m_AppId;
 	int m_Length;
 
+	bool m_SteamInitialized;
+	bool m_StatsInitialized;
+	
 };
 
 #endif
