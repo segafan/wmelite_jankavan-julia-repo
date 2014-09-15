@@ -7,9 +7,9 @@
 #include "SteamSupport.h"
 #include "Steam_api.h"
 
-IMPLEMENT_PERSISTENT(SteamSupport, false);
+IMPLEMENT_PERSISTENT(SteamAPI, false);
 
-SteamSupport::SteamSupport(CBGame* inGame, CScStack* Stack):CBScriptable(inGame)
+SteamAPI::SteamAPI(CBGame* inGame, CScStack* Stack):CBScriptable(inGame)
 {
 	Stack->CorrectParams(0);
 
@@ -27,7 +27,7 @@ SteamSupport::SteamSupport(CBGame* inGame, CScStack* Stack):CBScriptable(inGame)
 }
 
 
-SteamSupport::SteamSupport(CBGame* inGame):CBScriptable(inGame)
+SteamAPI::SteamAPI(CBGame* inGame):CBScriptable(inGame)
 {
 	m_AppId = 0;
 	m_Length = 0;
@@ -42,7 +42,7 @@ SteamSupport::SteamSupport(CBGame* inGame):CBScriptable(inGame)
 }
 
 
-SteamSupport::~SteamSupport(void)
+SteamAPI::~SteamAPI(void)
 {
 	SteamAPI_Shutdown();
 	SAFE_DELETE(m_Values);
@@ -50,7 +50,7 @@ SteamSupport::~SteamSupport(void)
 }
 
 
-bool SteamSupport::SetAchievement(const char* id)
+bool SteamAPI::SetAchievement(const char* id)
 {
 	if (!m_LoggedIn) return false;
 
@@ -58,8 +58,12 @@ bool SteamSupport::SetAchievement(const char* id)
 	// Game->LOG(0,id);
 	if (!SteamUser())
 	{
-//		Game->LOG(0,"We don't have a steam user.");
-		return false;
+		bool result = SteamAPI_Init();
+		if (!result)
+		{
+			Game->LOG(0,"We don't have a steam user.");
+			return false;
+		}
 	}
 	
 	if (!SteamUserStats()->SetAchievement(id)) return false;
@@ -70,7 +74,7 @@ bool SteamSupport::SetAchievement(const char* id)
 }
 
 
-HRESULT SteamSupport::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisStack, char *Name)
+HRESULT SteamAPI::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisStack, char *Name)
 {
 	if(strcmp(Name, "SetAchievement")==0){
 		Stack->CorrectParams(1);
@@ -86,7 +90,7 @@ HRESULT SteamSupport::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack 
 	return S_OK;
 }
 
-CScValue* SteamSupport::ScGetProperty(char *Name)
+CScValue* SteamAPI::ScGetProperty(char *Name)
 {
 	m_ScValue->SetNULL();
 	
@@ -109,13 +113,13 @@ CScValue* SteamSupport::ScGetProperty(char *Name)
 	return m_ScValue;
 }
 
-HRESULT SteamSupport::ScSetProperty(char *Name, CScValue *Value)
+HRESULT SteamAPI::ScSetProperty(char *Name, CScValue *Value)
 {
 			return S_OK;
 }
 
 
-HRESULT SteamSupport::Persist(CBPersistMgr* PersistMgr)
+HRESULT SteamAPI::Persist(CBPersistMgr* PersistMgr)
 {
 	CBScriptable::Persist(PersistMgr);
 
@@ -125,7 +129,7 @@ HRESULT SteamSupport::Persist(CBPersistMgr* PersistMgr)
 }
 
 
-char* SteamSupport::ScToString()
+char* SteamAPI::ScToString()
 {
 	static char Dummy[32768];
 	strcpy(Dummy, "");

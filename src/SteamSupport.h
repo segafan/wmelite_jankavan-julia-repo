@@ -1,19 +1,19 @@
-#ifndef __WmeSteamSupport_H__
-#define __WmeSteamSupport_H__
+#ifndef __WmeSteamAPI_H__
+#define __WmeSteamAPI_H__
 
 #include "steam_api.h"
 #include "BScriptable.h"
 
 
-class SteamSupport : public CBScriptable  
+class SteamAPI : public CBScriptable  
 {
 
 public:
-	DECLARE_PERSISTENT(SteamSupport, CBScriptable)
+	DECLARE_PERSISTENT(SteamAPI, CBScriptable)
 
-	SteamSupport(CBGame* inGame);
-	SteamSupport(CBGame* inGame, CScStack* Stack);
-	virtual ~SteamSupport(void);
+	SteamAPI(CBGame* inGame);
+	SteamAPI(CBGame* inGame, CScStack* Stack);
+	virtual ~SteamAPI(void);
 
 	HRESULT ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisStack, char *Name);
 	CScValue* ScGetProperty(char *Name);
