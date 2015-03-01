@@ -420,6 +420,36 @@ HRESULT CAdGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *This
 		Stack->PushNULL();
 		return S_OK;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	// Obtain Window Reference
+	//////////////////////////////////////////////////////////////////////////
+
+	else if(strcmp(Name, "QueryWindow")==0){
+		Stack->CorrectParams(1);
+		CScValue* Val = Stack->Pop();
+
+
+		CUIWindow* Window = NULL;
+		if(Val->IsString())
+		{
+			int lng = m_Windows.GetSize();
+			for (int l = 0; l<lng;l++)
+			{
+
+				if (strcmp(m_Windows[l]->m_Name, Val->GetString()) == 0)
+				{
+					Stack->PushNative(m_Windows[l],true);	
+					return S_OK;
+				}
+			}
+		}
+
+		Stack->PushNULL();
+
+		return S_OK;
+	}
+
+
 
 	//////////////////////////////////////////////////////////////////////////
 	// QueryItem
